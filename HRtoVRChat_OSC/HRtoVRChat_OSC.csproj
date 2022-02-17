@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net48</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>10</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Reference Include="SharpOSC, Version=0.1.1.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>C:\Users\lukej\Downloads\sharposc\v0.1.1.0\Release\SharpOSC.dll</HintPath>
+      </Reference>
+      <Reference Include="Tommy.Serializer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\..\VSProjects\Tommy.Serializer\Tommy.Serializer\bin\Debug\net35\Tommy.Serializer.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+      <PackageReference Include="System.Net.Http" Version="4.3.4" />
+      <PackageReference Include="Tommy" Version="3.1.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="HRManagers\WinBLEGATTManager.cs" />
+    </ItemGroup>
+
+</Project>

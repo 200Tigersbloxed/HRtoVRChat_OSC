@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRtoVRChat_OSC", "HRtoVRChat_OSC\HRtoVRChat_OSC.csproj", "{E35A03F8-CBC0-46D5-B61B-2AEE78D944CF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E35A03F8-CBC0-46D5-B61B-2AEE78D944CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E35A03F8-CBC0-46D5-B61B-2AEE78D944CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E35A03F8-CBC0-46D5-B61B-2AEE78D944CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E35A03F8-CBC0-46D5-B61B-2AEE78D944CF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
