@@ -65,6 +65,8 @@ These commands can be input into the console window while running
 | `starthr`   | none       | Starts the HR Listener                             |
 | `stophr`    | none       | Stops the HR Listener                              |
 | `restarthr` | none       | Restarts the HR Listener                           |
+| `startbeat` | none       | Starts HeartBeat if it isn't enabled already.      |
+| `stopbeat`  | none       | Stops the HeartBeat if it is already started       |
 | `exit`      | none       | Exits the app properly. **NOT THE SAME AS CTRL+C** |
 
 ## Avatar Setup
