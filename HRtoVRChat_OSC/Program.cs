@@ -5,9 +5,9 @@
         private static HRType hrType = HRType.Unknown;
         private static HRManager activeHRManager;
         private static bool isRestarting;
+        private static bool RunHeartBeat = false;
         public static Action<int, int, int, int, bool, bool> OnHRValuesUpdated = (ones, tens, hundreds, HR, isConnected, isActive) => { };
         public static Action<bool, bool> OnHeartBeatUpdate = (isHeartBeat, shouldStart) => { };
-        public static bool isHeartBeat { get; private set; } = false;
         
         private class currentHRSplit
         {
@@ -21,6 +21,7 @@
         private static CustomTimer loopCheck;
         
         private static Thread VerifyVRCOpen;
+        private static Thread BeatThread;
         static void Main(string[] args)
         {
             bool foundOnStart = OSCManager.Detect();
@@ -75,13 +76,14 @@
                 }
                 LogHelper.Warn("VRChat was not detected! Press any key to continue.");
                 Console.ReadKey();
+                Environment.Exit(1);
             }
         }
 
         private static void HandleCommand(string? input)
         {
             string[] inputs = input?.Split(' ') ?? new string[0];
-            switch (inputs[0])
+            switch (inputs[0].ToLower())
             {
                 case "exit":
                     Stop(true);
@@ -94,6 +96,33 @@
                     break;
                 case "restarthr":
                     RestartHRListener();
+                    break;
+                case "startbeat":
+                    if (BeatThread?.IsAlive ?? false)
+                        LogHelper.Warn("Cannot start beat as it's already started!");
+                    else
+                    {
+                        RunHeartBeat = true;
+                        BeatThread = new Thread(() =>
+                        {
+                            RunHeartBeat = true;
+                            HeartBeat();
+                        });
+                        BeatThread.Start();
+                        LogHelper.Log("Started HeartBeat");
+                    }
+                    break;
+                case "stopbeat":
+                    if (BeatThread?.IsAlive ?? false)
+                    {
+                        try
+                        {
+                            BeatThread.Abort();
+                        }
+                        catch(Exception){}
+                        RunHeartBeat = false;
+                    }
+                    LogHelper.Log("Stopped HRBeat");
                     break;
                 default:
                     LogHelper.Warn($"Unknown Command \"{inputs[0]}\"!");
@@ -144,7 +173,7 @@
             // Stop HR Listener
             StopHRListener();
             // Clear Parameters
-            ParamsManager.Parameters.Clear();
+            ParamsManager.ResetParams();
             // Stop Extraneous Tasks
             if (loopCheck?.IsRunning ?? false)
                 loopCheck.Close();
@@ -244,11 +273,27 @@
                     break;
             }
             // Start HeartBeats if there was a valid choice
-            if (activeHRManager != null && !fromRestart)
+            if (!RunHeartBeat)
             {
-                LogHelper.Debug("Starting Beating!");
-                HeartBeat();
+                if (BeatThread?.IsAlive ?? false)
+                {
+                    try
+                    {
+                        BeatThread.Abort();
+                    }
+                    catch(Exception){}
+                    RunHeartBeat = false;
+                }
+                BeatThread = new Thread(() =>
+                {
+                    LogHelper.Debug("Starting Beating!");
+                    RunHeartBeat = true;
+                    HeartBeat();
+                });
+                BeatThread.Start();
             }
+            else if(activeHRManager == null)
+                LogHelper.Warn("Can't start beat as ActiveHRManager is null!");
         }
 
         private static void StopHRListener()
@@ -263,6 +308,16 @@
                 activeHRManager.Stop();
             }
             activeHRManager = null;
+            // Stop Beating
+            if (BeatThread?.IsAlive ?? false)
+            {
+                try
+                {
+                    BeatThread.Abort();
+                }
+                catch(Exception){}
+                RunHeartBeat = false;
+            }
         }
 
         // why did i name the ienumerator this and why haven't i changed it
@@ -278,42 +333,59 @@
                 chs = intToHRSplit(HR);
                 OnHRValuesUpdated.Invoke(chs.ones, chs.tens, chs.hundreds, HR, isOpen, isActive);
             }
+            else
+                OnHRValuesUpdated.Invoke(0, 0, 0, 0, false, false);
         }
 
         static void HeartBeat()
         {
-            if(activeHRManager != null || isRestarting)
+            bool waited = false;
+            while (RunHeartBeat)
             {
-                bool io = activeHRManager.IsOpen();
-                // This should be started by the Melon Update void
-                if (io)
+                if(activeHRManager != null)
                 {
-                    isHeartBeat = false;
-                    // Get HR
-                    float HR = activeHRManager.GetHR();
-                    if (HR != 0)
+                    bool io = activeHRManager.IsOpen();
+                    // This should be started by the Melon Update void
+                    if (io)
                     {
-                        isHeartBeat = false;
-                        OnHeartBeatUpdate.Invoke(isHeartBeat, false);
-                        // Calculate wait interval
-                        float waitTime = default(float);
-                        // When lowering the HR significantly, this will cause issues with the beat bool
-                        // Dubbed the "Breathing Exercise" bug
-                        // There's a 'temp' fix for it right now, but I'm not sure how it'll hold up
-                        try { waitTime = (1 / ((HR - 0.2f) / 60)); } catch (Exception) { /*Just a Divide by Zero Exception*/ }
-                        new ExecuteInTime((int) (waitTime * 1000), (eit) =>
+                        // Get HR
+                        float HR = activeHRManager.GetHR();
+                        if (HR > 0)
                         {
-                            isHeartBeat = true;
-                            OnHeartBeatUpdate.Invoke(isHeartBeat, false);
-                            HeartBeat();
-                        });
+                            if (waited)
+                            {
+                                LogHelper.Debug("Found ActiveHRManager! Starting HeartBeat.");
+                                waited = false;
+                            }
+                            OnHeartBeatUpdate.Invoke(false, false);
+                            // Calculate wait interval
+                            float waitTime = default(float);
+                            // When lowering the HR significantly, this will cause issues with the beat bool
+                            // Dubbed the "Breathing Exercise" bug
+                            // There's a 'temp' fix for it right now, but I'm not sure how it'll hold up
+                            try { waitTime = (1 / ((HR - 0.2f) / 60)); } catch (Exception) { /*Just a Divide by Zero Exception*/ }
+                            Thread.Sleep((int) (waitTime * 1000));
+                            OnHeartBeatUpdate.Invoke(true, false);
+                            Thread.Sleep(100);
+                        }
+                        else
+                        {
+                            LogHelper.Warn("Cannot beat as HR is Less than or equal to zero");
+                            Thread.Sleep(1000);
+                        }
+                    }
+                    else
+                    {
+                        OnHeartBeatUpdate.Invoke(false, true);
+                        LogHelper.Debug("Waiting for ActiveHRManager for beating");
+                        waited = true;
+                        Thread.Sleep(1000);
                     }
                 }
                 else
                 {
-                    isHeartBeat = false;
-                    OnHeartBeatUpdate.Invoke(isHeartBeat, true);
-                    HeartBeat();
+                    LogHelper.Warn("Cannot beat as ActiveHRManager is null!");
+                    Thread.Sleep(1000);
                 }
             }
         }

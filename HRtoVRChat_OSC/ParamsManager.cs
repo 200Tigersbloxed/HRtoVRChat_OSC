@@ -49,6 +49,8 @@
         public static void ResetParams()
         {
             int paramcount = Parameters.Count;
+            foreach (HRParameter hrParameter in Parameters)
+                hrParameter.UpdateParameter(true);
             Parameters.Clear();
             LogHelper.Debug($"Cleared {paramcount} parameters!");
         }
@@ -76,9 +78,13 @@
             
             public string ParameterName { get; set; }
             public string ParamValue { get; set; }
-            public void UpdateParameter()
+            public string DefaultValue => "0";
+            public void UpdateParameter(bool fromReset = false)
             {
-                OSCManager.SendMessage("/avatar/parameters/" + ParameterName, Convert.ToInt32(ParamValue));
+                string val = ParamValue;
+                if (fromReset)
+                    val = DefaultValue;
+                OSCManager.SendMessage("/avatar/parameters/" + ParameterName, Convert.ToInt32(val));
             }
         }
 
@@ -123,9 +129,13 @@
             
             public string ParameterName { get; set; }
             public string ParamValue { get; set; }
-            public void UpdateParameter()
+            public string DefaultValue => "false";
+            public void UpdateParameter(bool fromReset = false)
             {
-                OSCManager.SendMessage("/avatar/parameters/" + ParameterName, Convert.ToBoolean(ParamValue));
+                string val = ParamValue;
+                if (fromReset)
+                    val = DefaultValue;
+                OSCManager.SendMessage("/avatar/parameters/" + ParameterName, Convert.ToBoolean(val));
             }
         }
 
@@ -154,9 +164,13 @@
 
             public string ParameterName { get; set; }
             public string ParamValue { get; set; }
-            public void UpdateParameter()
+            public string DefaultValue => "0";
+            public void UpdateParameter(bool fromReset = false)
             {
-                OSCManager.SendMessage("/avatar/parameters/" + ParameterName, (float) Convert.ToDouble(ParamValue));
+                string val = ParamValue;
+                if (fromReset)
+                    val = DefaultValue;
+                OSCManager.SendMessage("/avatar/parameters/" + ParameterName, (float) Convert.ToDouble(val));
             }
         }
 
@@ -174,7 +188,8 @@
         {
             public string ParameterName { get; set; }
             public string ParamValue { get; set; }
-            public void UpdateParameter();
+            public string DefaultValue { get; }
+            public void UpdateParameter(bool fromReset = false);
         }
 
         public enum BoolCheckType

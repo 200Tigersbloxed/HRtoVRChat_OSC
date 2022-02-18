@@ -12,7 +12,17 @@ namespace HRtoVRChat_OSC
 
         public static void SendMessage(string destination, object data)
         {
-            OscMessage message = new OscMessage(destination, data);
+            object realdata = data;
+            // If it's a bool, it needs to be converted to a 0, 1 format
+            if (Type.GetTypeCode(realdata.GetType()) == TypeCode.Boolean)
+            {
+                bool dat = (bool) Convert.ChangeType(realdata, TypeCode.Boolean);
+                if (dat)
+                    realdata = 1;
+                else
+                    realdata = 0;
+            }
+            OscMessage message = new OscMessage(destination, realdata);
             UDPSender sender = new UDPSender("127.0.0.1", 9000);
             sender.Send(message);
         }

@@ -8,7 +8,17 @@ namespace HRtoVRChat_OSC.HRManagers
         private Thread _thread;
         private bool shouldOpen;
 
-        private bool IsConnected => wst?.IsAlive ?? false;
+        private bool IsConnected
+        {
+            get
+            {
+                if (wst != null)
+                {
+                    return wst.IsAlive;
+                }
+                return false;
+            }
+        }
         public int HR { get; private set; }
         public string Timestamp { get; private set; }
 
