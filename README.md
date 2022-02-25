@@ -38,6 +38,8 @@ Below is a table of all the config values and a description. Please update the c
 
 | Config Value        | Default Value             | Description                                                                             |
 |---------------------|---------------------------|-----------------------------------------------------------------------------------------|
+| `ip`                | `(string)` `127.0.0.1`    | The IP to send OSC messages to.                                                         |
+| `port`              | `(int)` 9000              | The Port to send OSC messages to.                                                       |
 | `hrtype`            | `(string)` unknown        | The type of service where to get Heart Rate data from.                                  |
 | `fitbiturl`         | `(string)` `String.Empty` | (FitbitHRtoWS Only) The WebSocket URL to connect to.                                    |
 | `hyperatesessionid` | `(string)` `String.Empty` | (HypeRate Only) The HypeRate SessionId to subscribe to.                                 |
