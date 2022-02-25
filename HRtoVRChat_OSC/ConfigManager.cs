@@ -14,6 +14,7 @@ namespace HRtoVRChat_OSC
                 // Load
                 LogHelper.Log("Loading Config.");
                 Config nc = TommySerializer.FromTomlFile<Config>(ConfigLocation) ?? new Config();
+                SaveConfig(nc);
                 LoadedConfig = nc;
             }
             else
@@ -21,16 +22,24 @@ namespace HRtoVRChat_OSC
                 // Create
                 LogHelper.Log("No Config Found! Creating Config.");
                 Config nc = new Config();
-                TommySerializer.ToTomlFile(nc, ConfigLocation);
+                SaveConfig(nc);
                 LoadedConfig = nc;
             }
             LogHelper.Log("Loaded Config!");
         }
+
+        public static void SaveConfig(Config config) => TommySerializer.ToTomlFile(config, ConfigLocation);
     }
     
     [TommyTableName("HRtoVRChat_OSC")]
     public class Config
     {
+        [TommyComment("The IP to send messages to")]
+        [TommyInclude]
+        public string ip = "127.0.0.1";
+        [TommyComment("The Port to send messages to")]
+        [TommyInclude]
+        public int port = 9000;
         [TommyComment("The source from where to pull Heart Rate Data")]
         [TommyInclude]
         public string hrType = "unknown";

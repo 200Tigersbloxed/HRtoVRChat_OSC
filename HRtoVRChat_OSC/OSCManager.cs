@@ -23,7 +23,7 @@ namespace HRtoVRChat_OSC
                     realdata = 0;
             }
             OscMessage message = new OscMessage(destination, realdata);
-            UDPSender sender = new UDPSender("127.0.0.1", 9000);
+            UDPSender sender = new UDPSender(ConfigManager.LoadedConfig.ip, ConfigManager.LoadedConfig.port);
             sender.Send(message);
         }
     }
