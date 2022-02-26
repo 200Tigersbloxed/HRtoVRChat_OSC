@@ -100,6 +100,23 @@ Make sure you have set all values in your `config.cfg` file, and everything is c
 Open a cmd window, navigate to where your `HRtoVRChat_OSC.exe` is located with the [cd](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/cd) 
 command, type `HRtoVRChat_OSC.exe ` following the launch argument(s) you want to use. (separated with a space)
 
+### Pulsoid FAQs
+
+While both HypeRate and Pulsoid were affected by their respective API changes, only Pulsoid's setup has changed. First, the old Pulsoid/API config value is **removed**. Now, there's two ways to migrate.
+
+**Method 1** - Official Sockets *(Not Recommended)*
+
+If you can figure out how to get an `access_token` from Pulsoid, then set the `pulsoidkey` config value to that token, and set `hrtype` to `pulsoidsocket`.
+https://github.com/pulsoid-oss/pulsoid-api#read_heart_rate_via_websocket
+
+**Method 2** - Third-Party Sockets
+
+Set `hrtype` to `pulsoid` and set `pulsoidwidget` to your Pulsoid widgetId.
+
+To get your widgetId, go to your Pulsoid dashboard, go to the Widgets tab, hit Configure on any widget (I recommend the default one), and copy the long string of characters after the last slash in the URL (red/highlighted in attached image)
+
+![widgetId](https://cdn.discordapp.com/attachments/887159486677151814/937249892995326012/unknown.png)
+
 ### I found a bug/issue with the program
 
 Report a bug/issue on the [issues page](https://github.com/200Tigersbloxed/HRtoVRChat_OSC/issues) 
