@@ -9,6 +9,18 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Reference Include="AsyncIO, Version=0.1.25.0, Culture=neutral, PublicKeyToken=44a94435bd6f33f8">
+        <HintPath>..\..\..\HP\HP Omnicept SDK\1.13.1\bin\Release\csharp\AsyncIO.dll</HintPath>
+      </Reference>
+      <Reference Include="Google.Protobuf, Version=3.11.4.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604">
+        <HintPath>..\..\..\HP\HP Omnicept SDK\1.13.1\bin\Release\csharp\Google.Protobuf.dll</HintPath>
+      </Reference>
+      <Reference Include="lib-client-csharp, Version=1.13.1.3402, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\..\..\HP\HP Omnicept SDK\1.13.1\bin\Release\csharp\lib-client-csharp.dll</HintPath>
+      </Reference>
+      <Reference Include="NetMQ, Version=4.0.0.1, Culture=neutral, PublicKeyToken=a6decef4ddc58b3a">
+        <HintPath>..\..\..\HP\HP Omnicept SDK\1.13.1\bin\Release\csharp\NetMQ.dll</HintPath>
+      </Reference>
       <Reference Include="SharpOSC, Version=0.1.1.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>C:\Users\lukej\Downloads\sharposc\v0.1.1.0\Release\SharpOSC.dll</HintPath>
       </Reference>
@@ -19,6 +31,7 @@
 
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+      <PackageReference Include="SemanticVersioning" Version="2.0.0" />
       <PackageReference Include="System.Net.Http" Version="4.3.4" />
       <PackageReference Include="Tommy" Version="3.1.2" />
     </ItemGroup>

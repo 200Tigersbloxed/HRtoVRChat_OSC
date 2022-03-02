@@ -1,4 +1,6 @@
-﻿namespace HRtoVRChat_OSC
+﻿using HRtoVRChat_OSC.HRManagers;
+
+namespace HRtoVRChat_OSC
 {
     class Program
     {
@@ -229,6 +231,9 @@
                 case "textfile":
                     hrt = HRType.TextFile;
                     break;
+                case "omnicept":
+                    hrt = HRType.Omnicept;
+                    break;
             }
 
             return hrt;
@@ -248,24 +253,28 @@
             switch (hrType)
             {
                 case HRType.FitbitHRtoWS:
-                    activeHRManager = new HRManagers.FitbitManager();
+                    activeHRManager = new FitbitManager();
                     activeHRManager.Init(ConfigManager.LoadedConfig.fitbitURL);
                     break;
                 case HRType.HypeRate:
-                    activeHRManager = new HRManagers.HypeRateManager();
+                    activeHRManager = new HypeRateManager();
                     activeHRManager.Init(ConfigManager.LoadedConfig.hyperateSessionId);
                     break;
                 case HRType.Pulsoid:
-                    activeHRManager = new HRManagers.PulsoidManager();
+                    activeHRManager = new PulsoidManager();
                     activeHRManager.Init(ConfigManager.LoadedConfig.pulsoidwidget);
                     break;
                 case HRType.PulsoidSocket:
-                    activeHRManager = new HRManagers.PulsoidSocketManager();
+                    activeHRManager = new PulsoidSocketManager();
                     activeHRManager.Init(ConfigManager.LoadedConfig.pulsoidkey);
                     break;
                 case HRType.TextFile:
-                    activeHRManager = new HRManagers.TextFileManager();
+                    activeHRManager = new TextFileManager();
                     activeHRManager.Init(ConfigManager.LoadedConfig.textfilelocation);
+                    break;
+                case HRType.Omnicept:
+                    activeHRManager = new OmniceptManager();
+                    activeHRManager.Init(String.Empty);
                     break;
                 default:
                     LogHelper.Warn("No hrType was selected! Please see README if you think this is an error!");
@@ -447,6 +456,7 @@
             Pulsoid,
             PulsoidSocket,
             TextFile,
+            Omnicept,
             Unknown
         }
     }
