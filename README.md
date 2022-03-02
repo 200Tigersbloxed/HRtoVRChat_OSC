@@ -29,6 +29,7 @@ Please also consider contributing to add more support with other Heart Rate Moni
 | Pulsoid       | `pulsoid`       | https://pulsoid.net/                                                     |
 | PulsoidSocket | `pulsoidsocket` | https://github.com/pulsoid-oss/pulsoid-api#read_heart_rate_via_websocket |
 | TextFile      | `textfile`      | A .txt file containing only a number                                     |
+| Omnicept      | `omnicept`      | https://www.hp.com/us-en/vr/reverb-g2-vr-headset-omnicept-edition.html   |
 
 Take note of HRType, as you'll need to know which you you have to put in the `hrtype` config value.
 
