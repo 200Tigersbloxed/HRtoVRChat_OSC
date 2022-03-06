@@ -8,7 +8,18 @@ Stream your Heart Rate onto your VRChat avatar via. the use of OSC Avatar Parame
 [![lastcommit](https://img.shields.io/github/last-commit/200Tigersbloxed/HRtoVRChat_OSC?style=for-the-badge)](https://github.com/200Tigersbloxed/HRtoVRChat_OSC/commits/main) 
 [![issues](https://img.shields.io/github/issues/200Tigersbloxed/HRtoVRChat_OSC?style=for-the-badge)](https://github.com/200Tigersbloxed/HRtoVRChat_OSC/issues)
 
-## Installing
+## Installing the UI Helper
+
+**It is always recommended to use the UI as it heavily simplifies the process of setting up the software!**
+
+1) Download the `HRtoVRChat_OSC_UI.zip` from the [Latest Release](https://github.com/200Tigersbloxed/HRtoVRChat_OSC/releases/latest)
+2) Extract the folder to a directory
+3) Go to the Updates tab, and hit the Update Software
+  + After the process completes, hit the Refresh button and make sure the Installed Version and Latest Version match
+5) Return to the Program tab, and Start the app once, then wait for it to close
+6) Go to the Config tab and configure all values you'd like to
+
+## Installing the Console App
 
 1) Download the `HRtoVRChat_OSC.zip` from the [Latest Release](https://github.com/200Tigersbloxed/HRtoVRChat_OSC/releases/latest)
 2) Extract the folder to a directory
@@ -117,6 +128,10 @@ Set `hrtype` to `pulsoid` and set `pulsoidwidget` to your Pulsoid widgetId.
 To get your widgetId, go to your Pulsoid dashboard, go to the Widgets tab, hit Configure on any widget (I recommend the default one), and copy the long string of characters after the last slash in the URL (red/highlighted in attached image)
 
 ![widgetId](https://cdn.discordapp.com/attachments/887159486677151814/937249892995326012/unknown.png)
+
+### The Config says "Loaded Config is null! Cannot continue"
+
+This means that a config was not found in your `HRtoVRChat_OSC` container for the UI app (only). Please make sure the software is updated and that you have run it at least once.
 
 ### I found a bug/issue with the program
 
