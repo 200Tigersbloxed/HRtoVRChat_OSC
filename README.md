@@ -33,14 +33,16 @@ If you'd like to request support, please use the [Discussions Board](https://git
 
 Please also consider contributing to add more support with other Heart Rate Monitors.
 
-| Device        | HRType          | Info                                                                     |
-|---------------|-----------------|--------------------------------------------------------------------------|
-| FitbitHRtoWS  | `fitbithrtows`  | https://github.com/200Tigersbloxed/FitbitHRtoWS                          |
-| HypeRate      | `hyperate`      | https://www.hyperate.io/                                                 |
-| Pulsoid       | `pulsoid`       | https://pulsoid.net/                                                     |
-| PulsoidSocket | `pulsoidsocket` | https://github.com/pulsoid-oss/pulsoid-api#read_heart_rate_via_websocket |
-| TextFile      | `textfile`      | A .txt file containing only a number                                     |
-| Omnicept      | `omnicept`      | https://www.hp.com/us-en/vr/reverb-g2-vr-headset-omnicept-edition.html   |
+| Device          | HRType          | Info                                                                     |
+|-----------------|-----------------|--------------------------------------------------------------------------|
+| FitbitHRtoWS    | `fitbithrtows`  | https://github.com/200Tigersbloxed/FitbitHRtoWS                          |
+| HypeRate        | `hyperate`      | https://www.hyperate.io/                                                 |
+| Pulsoid/Stromno | `pulsoid`       | https://pulsoid.net/ https://www.stromno.com/                            |
+| PulsoidSocket   | `pulsoidsocket` | https://github.com/pulsoid-oss/pulsoid-api#read_heart_rate_via_websocket |
+| TextFile        | `textfile`      | A .txt file containing only a number                                     |
+| Omnicept        | `omnicept`      | https://www.hp.com/us-en/vr/reverb-g2-vr-headset-omnicept-edition.html   |
+
+**[For a full list of all the supported devices, please click here](https://www.fortnite.lol/projects/hrtovrchat#h.mlz9fz56ioey)**
 
 Take note of HRType, as you'll need to know which you you have to put in the `hrtype` config value.
 
