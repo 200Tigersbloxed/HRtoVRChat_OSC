@@ -5,31 +5,31 @@ namespace HRtoVRChat_OSC.HRManagers
     public class PulsoidManager : HRManager
     {
         private WebsocketTemplate wst;
-        private bool shouldUpdate;
         private Thread _thread;
-        
-        public int HR { get; private set; }
-        public string Timestamp { get; private set; }
-        
-        private bool IsConnected => wst?.IsAlive ?? false;
-        
-        public bool Init(string d1)
+        private CancellationTokenSource tokenSource = new CancellationTokenSource();
+
+        private bool IsConnected
         {
-            shouldUpdate = true;
-            StartThread(d1);
-            LogHelper.Log("Started Pulsoid!");
-            return true;
-        }
-        
-        void VerifyClosedThread()
-        {
-            if (_thread != null)
+            get
             {
-                if (_thread.IsAlive)
-                    _thread.Abort();
+                if (wst != null)
+                {
+                    return wst.IsAlive;
+                }
+                return false;
             }
         }
-        
+        public int HR { get; private set; }
+        public string Timestamp { get; private set; }
+
+        public bool Init(string id)
+        {
+            tokenSource = new CancellationTokenSource();
+            StartThread(id);
+            LogHelper.Log("Initialized WebSocket!");
+            return IsConnected;
+        }
+
         private async void HandleMessage(string message)
         {
             try
@@ -50,27 +50,25 @@ namespace HRtoVRChat_OSC.HRManagers
             catch (Exception) { }
         }
 
-        private void StartThread(string id)
+        public void StartThread(string id)
         {
-            VerifyClosedThread();
             _thread = new Thread(async () =>
             {
-                bool noerror = true;
                 wst = new WebsocketTemplate("wss://hrproxy.fortnite.lol:2096/hrproxy");
+                bool noerror = true;
                 try
                 {
                     await wst.Start();
                 }
-                catch (Exception)
+                catch(Exception e)
                 {
-                    LogHelper.Error("Failed to start Pulsoid!");
+                    LogHelper.Error("Failed to connect to Pulsoid server! Exception: ", e);
                     noerror = false;
                 }
-
                 if (noerror)
                 {
                     await wst.SendMessage("{\"reader\": \"pulsoid\", \"identifier\": \"" + id + "\"}");
-                    while (shouldUpdate)
+                    while (!tokenSource.IsCancellationRequested)
                     {
                         if (IsConnected)
                         {
@@ -78,27 +76,48 @@ namespace HRtoVRChat_OSC.HRManagers
                             if (!string.IsNullOrEmpty(message))
                                 HandleMessage(message);
                         }
+                        else
+                            if (!await wst.Start())
+                                Stop();
                         Thread.Sleep(1);
                     }
-                    await Close();
-                    LogHelper.Log("Closed Pulsoid");
                 }
-                _thread?.Abort();
+                await Close();
+                LogHelper.Log("Closed Pulsoid");
             });
             _thread.Start();
         }
 
+        public int GetHR() => HR;
+
         private async Task Close()
         {
-            await wst?.Stop();
+            if (wst != null)
+                if (wst.IsAlive)
+                    try
+                    {
+                        await wst.Stop();
+                        wst = null;
+                    }
+                    catch(Exception e)
+                    {
+                        LogHelper.Error("Failed to close connection to Pulsoid Server! Exception: ", e);
+                    }
+                else
+                    LogHelper.Warn("WebSocket is not alive! Did you mean to Dispose()?");
+            else
+                LogHelper.Warn("WebSocket is null! Did you mean to Initialize()?");
         }
-
-        public int GetHR() => HR;
 
         public void Stop()
         {
-            shouldUpdate = false;
-            LogHelper.Debug("Sent message to Stop Pulsoid");
+            if (wst != null)
+            {
+                tokenSource.Cancel();
+                LogHelper.Debug("Sent message to Stop WebSocket");
+            }
+            else
+                LogHelper.Warn("WebSocket is already null! Did you mean to Initialize()?");
         }
 
         public bool IsOpen() => IsConnected;

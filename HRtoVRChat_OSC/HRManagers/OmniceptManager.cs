@@ -20,7 +20,7 @@ public class OmniceptManager : HRManager
         if (_worker != null)
         {
             if(_worker.IsAlive)
-                _worker.Abort();
+                token.Cancel();
             _worker = null;
         }
         token = new CancellationTokenSource();

@@ -2,20 +2,20 @@
 {
     class TextFileManager : HRManager
     {
-        bool shouldUpdate = false;
+        CancellationTokenSource shouldUpdate = new CancellationTokenSource();
         string pubFe = String.Empty;
         int HR = 0;
 
         private Thread _thread = null;
 
-        bool HRManager.Init(string fileLocation)
+        public bool Init(string fileLocation)
         {
             bool fe = File.Exists(fileLocation);
             if (fe)
             {
                 LogHelper.Log("Found text file!");
                 pubFe = fileLocation;
-                shouldUpdate = true;
+                shouldUpdate = new CancellationTokenSource();
                 StartThread();
             }
             else
@@ -28,7 +28,7 @@
             if (_thread != null)
             {
                 if (_thread.IsAlive)
-                    _thread.Abort();
+                    shouldUpdate.Cancel();
             }
         }
 
@@ -37,7 +37,7 @@
             VerifyClosedThread();
             _thread = new Thread(() =>
             {
-                while (shouldUpdate)
+                while (!shouldUpdate.IsCancellationRequested)
                 {
                     bool failed = false;
                     int tempHR = 0;
@@ -54,14 +54,14 @@
             _thread.Start();
         }
 
-        void HRManager.Stop()
+        public void Stop()
         {
-            shouldUpdate = false;
+            shouldUpdate.Cancel();
             VerifyClosedThread();
         }
 
-        int HRManager.GetHR() => HR;
-        public bool IsOpen() => shouldUpdate;
+        public int GetHR() => HR;
+        public bool IsOpen() => !shouldUpdate.IsCancellationRequested;
         public bool IsActive() => IsOpen();
     }
 }

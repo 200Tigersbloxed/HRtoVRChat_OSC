@@ -23,7 +23,9 @@ namespace HRtoVRChat_OSC
         private static CustomTimer loopCheck;
         
         private static Thread VerifyVRCOpen;
+        private static CancellationTokenSource vvoToken = new CancellationTokenSource();
         private static Thread BeatThread;
+        private static CancellationTokenSource btToken = new CancellationTokenSource();
         static void Main(string[] args)
         {
             bool foundOnStart = OSCManager.Detect();
@@ -82,11 +84,24 @@ namespace HRtoVRChat_OSC
             }
         }
 
+        private static readonly string HelpCommandString = "\n\n[Help]\n" +
+                                                           "exit - Exits the app.\n" +
+                                                           "starthr - Manually starts the HeartRateManager if it isn't already started.\n" +
+                                                           "stophr - Manually stops the HeartRateManager if it is already started.\n" +
+                                                           "restarthr - Stops then Starts the HeartRateManager.\n" +
+                                                           "startbeat - Starts HeartBeat if it isn't enabled already.\n" +
+                                                           "stopbeat - Stops the HeartBeat if it is already started.\n" +
+                                                           "refreshconfig - Refreshes the Config from File.\n" +
+                                                           "help - Shows available commands.\n";
+
         private static void HandleCommand(string? input)
         {
             string[] inputs = input?.Split(' ') ?? new string[0];
             switch (inputs[0].ToLower())
             {
+                case "help":
+                    LogHelper.Log(HelpCommandString);
+                    break;
                 case "exit":
                     Stop(true);
                     break;
@@ -105,6 +120,7 @@ namespace HRtoVRChat_OSC
                     else
                     {
                         RunHeartBeat = true;
+                        btToken = new CancellationTokenSource();
                         BeatThread = new Thread(() =>
                         {
                             RunHeartBeat = true;
@@ -119,12 +135,15 @@ namespace HRtoVRChat_OSC
                     {
                         try
                         {
-                            BeatThread.Abort();
+                            btToken.Cancel();
                         }
-                        catch(Exception){}
+                        catch(Exception e){LogHelper.Debug(e);}
                         RunHeartBeat = false;
                     }
                     LogHelper.Log("Stopped HRBeat");
+                    break;
+                case "refreshconfig":
+                    ConfigManager.CreateConfig();
                     break;
                 default:
                     LogHelper.Warn($"Unknown Command \"{inputs[0]}\"!");
@@ -139,12 +158,15 @@ namespace HRtoVRChat_OSC
         {
             if (!Gargs.Contains("--skip-vrc-check"))
             {
+                vvoToken = new CancellationTokenSource();
                 VerifyVRCOpen = new Thread(() =>
                 {
                     bool isOpen = OSCManager.Detect();
-                    while (isOpen)
+                    while (!vvoToken.IsCancellationRequested)
                     {
                         isOpen = OSCManager.Detect();
+                        if(!isOpen)
+                            vvoToken.Cancel();
                         Thread.Sleep(1500);
                     }
                     LogHelper.Log("Thread Stopped");
@@ -288,11 +310,12 @@ namespace HRtoVRChat_OSC
                 {
                     try
                     {
-                        BeatThread.Abort();
+                        btToken.Cancel();
                     }
                     catch(Exception){}
                     RunHeartBeat = false;
                 }
+                btToken = new CancellationTokenSource();
                 BeatThread = new Thread(() =>
                 {
                     LogHelper.Debug("Starting Beating!");
@@ -322,7 +345,7 @@ namespace HRtoVRChat_OSC
             {
                 try
                 {
-                    BeatThread.Abort();
+                    btToken.Cancel();
                 }
                 catch(Exception){}
                 RunHeartBeat = false;
@@ -349,9 +372,13 @@ namespace HRtoVRChat_OSC
         static void HeartBeat()
         {
             bool waited = false;
-            while (RunHeartBeat)
+            while (!btToken.IsCancellationRequested)
             {
-                if(activeHRManager != null)
+                if(!RunHeartBeat)
+                    btToken.Cancel();
+                else
+                {
+                    if(activeHRManager != null)
                 {
                     bool io = activeHRManager.IsOpen();
                     // This should be started by the Melon Update void
@@ -395,6 +422,7 @@ namespace HRtoVRChat_OSC
                 {
                     LogHelper.Warn("Cannot beat as ActiveHRManager is null!");
                     Thread.Sleep(1000);
+                }
                 }
             }
         }

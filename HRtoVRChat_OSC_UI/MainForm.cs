@@ -52,6 +52,8 @@ namespace HRtoVRChat_OSC_UI
             {
                 try
                 {
+                    myStreamWriter?.WriteLine("exit");
+                    UpdateConsoleOutput.Invoke("> exit");
                     myStreamWriter?.Close();
                     CurrentProcess?.Kill();
                 }

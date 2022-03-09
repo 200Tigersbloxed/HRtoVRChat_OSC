@@ -6,7 +6,7 @@ namespace HRtoVRChat_OSC.HRManagers
     {
         private WebsocketTemplate wst;
         private Thread _thread;
-        private bool shouldOpen;
+        private CancellationTokenSource tokenSource = new CancellationTokenSource();
 
         private bool IsConnected
         {
@@ -24,7 +24,7 @@ namespace HRtoVRChat_OSC.HRManagers
 
         public bool Init(string id)
         {
-            shouldOpen = true;
+            tokenSource = new CancellationTokenSource();
             StartThread(id);
             LogHelper.Log("Initialized WebSocket!");
             return IsConnected;
@@ -68,7 +68,7 @@ namespace HRtoVRChat_OSC.HRManagers
                 if (noerror)
                 {
                     await wst.SendMessage("{\"reader\": \"hyperate\", \"identifier\": \"" + id + "\"}");
-                    while (shouldOpen)
+                    while (!tokenSource.IsCancellationRequested)
                     {
                         if (IsConnected)
                         {
@@ -76,12 +76,14 @@ namespace HRtoVRChat_OSC.HRManagers
                             if (!string.IsNullOrEmpty(message))
                                 HandleMessage(message);
                         }
+                        else
+                            if (!await wst.Start())
+                                Stop();
                         Thread.Sleep(1);
                     }
                 }
                 await Close();
                 LogHelper.Log("Closed HypeRate");
-                _thread?.Abort();
             });
             _thread.Start();
         }
@@ -111,7 +113,7 @@ namespace HRtoVRChat_OSC.HRManagers
         {
             if (wst != null)
             {
-                shouldOpen = false;
+                tokenSource.Cancel();
                 LogHelper.Debug("Sent message to Stop WebSocket");
             }
             else

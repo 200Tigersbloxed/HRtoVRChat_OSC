@@ -4,7 +4,7 @@ namespace HRtoVRChat_OSC.HRManagers
 {
     class PulsoidSocketManager : HRManager
     {
-        bool shouldUpdate = false;
+        CancellationTokenSource shouldUpdate = new CancellationTokenSource();
         string pubUrl = String.Empty;
         int HR = 0;
 
@@ -12,8 +12,9 @@ namespace HRtoVRChat_OSC.HRManagers
 
         private WebsocketTemplate wst;
 
-        bool HRManager.Init(string url)
+        public bool Init(string url)
         {
+            shouldUpdate = new CancellationTokenSource();
             pubUrl = "wss://dev.pulsoid.net/api/v1/data/real_time?access_token=" + url;
             StartThread();
             LogHelper.Log("PulsoidSocketManager Initialized!");
@@ -25,7 +26,7 @@ namespace HRtoVRChat_OSC.HRManagers
             if (_thread != null)
             {
                 if (_thread.IsAlive)
-                    _thread.Abort();
+                    Stop();
             }
         }
 
@@ -36,7 +37,7 @@ namespace HRtoVRChat_OSC.HRManagers
             {
                 wst = new WebsocketTemplate(pubUrl);
                 await wst.Start();
-                while (shouldUpdate)
+                while (!shouldUpdate.IsCancellationRequested)
                 {
                     // old method RIP ;(
                     /*
@@ -109,14 +110,14 @@ namespace HRtoVRChat_OSC.HRManagers
             _thread.Start();
         }
 
-        void HRManager.Stop()
+        public void Stop()
         {
-            shouldUpdate = false;
+            shouldUpdate.Cancel();
             VerifyClosedThread();
         }
 
-        int HRManager.GetHR() => HR;
-        public bool IsOpen() => shouldUpdate && !string.IsNullOrEmpty(pubUrl);
-        bool HRManager.IsActive() => IsOpen();
+        public int GetHR() => HR;
+        public bool IsOpen() => !shouldUpdate.IsCancellationRequested && !string.IsNullOrEmpty(pubUrl);
+        public bool IsActive() => IsOpen();
     }
 }

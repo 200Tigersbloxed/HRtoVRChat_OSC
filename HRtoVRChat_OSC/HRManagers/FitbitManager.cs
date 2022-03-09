@@ -7,7 +7,7 @@ namespace HRtoVRChat_OSC.HRManagers
     {
         private ClientWebSocket cws = null;
         private Thread _thread;
-        private bool shouldOpen = false;
+        private CancellationTokenSource tokenSource = new CancellationTokenSource();
 
         private bool IsConnected => cws?.State == WebSocketState.Open;
         public bool FitbitIsConnected { get; private set; } = false;
@@ -15,7 +15,7 @@ namespace HRtoVRChat_OSC.HRManagers
 
         public bool Init(string url)
         {
-            shouldOpen = true;
+            tokenSource = new CancellationTokenSource();
             StartThread(url);
             LogHelper.Log("Initialized WebSocket!");
             return IsConnected;
@@ -93,15 +93,16 @@ namespace HRtoVRChat_OSC.HRManagers
                 }
                 if (noerror)
                 {
-                    while (shouldOpen && IsConnected)
+                    while (!tokenSource.IsCancellationRequested)
                     {
+                        if(!IsConnected)
+                            Stop();
                         await SendAndReceiveMessage("getHR");
                         await SendAndReceiveMessage("checkFitbitConnection");
                         Thread.Sleep(500);
                     }
                 }
                 await Close();
-                _thread.Abort();
             });
             _thread.Start();
         }
@@ -132,7 +133,7 @@ namespace HRtoVRChat_OSC.HRManagers
         {
             if (cws != null)
             {
-                shouldOpen = false;
+                tokenSource.Cancel();
                 LogHelper.Debug("Sent message to Stop WebSocket");
             }
             else
