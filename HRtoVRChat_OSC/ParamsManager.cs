@@ -38,7 +38,7 @@
                 else if (HR < minhr)
                     targetFloat = 0;
                 else
-                    targetFloat = (HR - minhr) / maxhr;
+                    targetFloat = (HR - minhr) / (maxhr - minhr);
                 return targetFloat;
             }, "HRPercent"));
             Parameters.Add(new BoolParameter(hro => hro.isActive, "isHRActive"));
