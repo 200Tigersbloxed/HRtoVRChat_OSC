@@ -256,6 +256,9 @@ namespace HRtoVRChat_OSC
                 case "omnicept":
                     hrt = HRType.Omnicept;
                     break;
+                case "sdk":
+                    hrt = HRType.SDK;
+                    break;
             }
 
             return hrt;
@@ -297,6 +300,10 @@ namespace HRtoVRChat_OSC
                 case HRType.Omnicept:
                     activeHRManager = new OmniceptManager();
                     activeHRManager.Init(String.Empty);
+                    break;
+                case HRType.SDK:
+                    activeHRManager = new SDKManager();
+                    activeHRManager.Init("127.0.0.1:9000");
                     break;
                 default:
                     LogHelper.Warn("No hrType was selected! Please see README if you think this is an error!");
@@ -485,6 +492,7 @@ namespace HRtoVRChat_OSC
             PulsoidSocket,
             TextFile,
             Omnicept,
+            SDK,
             Unknown
         }
     }

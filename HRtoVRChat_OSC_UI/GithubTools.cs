@@ -4,9 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace HRtoVRChat_OSC_UI
@@ -27,6 +25,11 @@ namespace HRtoVRChat_OSC_UI
         {
             "config.cfg"
         };
+
+        private static string[] ExcludeDirectoriesOnDelete =
+        {
+
+        };
         
         public static string GetLatestVersion()
         {
@@ -40,6 +43,43 @@ namespace HRtoVRChat_OSC_UI
                 return tag;
             }
             return String.Empty;
+        }
+        
+        /// <summary>
+        /// Method made by JPK from Stackoverflow
+        /// No edits were made
+        /// https://stackoverflow.com/a/39254732/12968919
+        /// </summary>
+        /// <param name="filepath">Path of the file</param>
+        /// <param name="timeout">Optional Timeout</param>
+        private static void DeleteFileAndWait(string filepath, int timeout = 30000)
+        {
+            using (var fw = new FileSystemWatcher(Path.GetDirectoryName(filepath), Path.GetFileName(filepath)))
+            using (var mre = new ManualResetEventSlim())
+            {
+                fw.EnableRaisingEvents = true;
+                fw.Deleted += (object sender, FileSystemEventArgs e) =>
+                {
+                    mre.Set();
+                };
+                File.Delete(filepath);
+                mre.Wait(timeout);
+            }
+        }
+        
+        private static void DeleteDirectoryAndWait(string directory, int timeout = 30000)
+        {
+            using (var fw = new FileSystemWatcher(Path.GetDirectoryName(directory)))
+            using (var mre = new ManualResetEventSlim())
+            {
+                fw.EnableRaisingEvents = true;
+                fw.Deleted += (object sender, FileSystemEventArgs e) =>
+                {
+                    mre.Set();
+                };
+                Directory.Delete(directory, true);
+                mre.Wait(timeout);
+            }
         }
 
         public static void DownloadLatestVersion(Action callback = null)
@@ -63,7 +103,13 @@ namespace HRtoVRChat_OSC_UI
                         foreach (string file in Directory.GetFiles(outputPath))
                         {
                             if(!ExcludeFilesOnDelete.Contains(Path.GetFileName(file)))
-                                File.Delete(file);
+                                DeleteFileAndWait(file);
+                        }
+                        // Delete all directories
+                        foreach (string directory in Directory.GetDirectories(outputPath))
+                        {
+                            if(!ExcludeDirectoriesOnDelete.Contains(new DirectoryInfo(Path.GetDirectoryName(directory)).Name))
+                                DeleteDirectoryAndWait(directory);
                         }
                     }
                     else

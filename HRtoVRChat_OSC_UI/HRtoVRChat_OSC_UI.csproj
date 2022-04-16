@@ -43,6 +43,7 @@
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Design" />
+        <Reference Include="System.IO.Compression" />
         <Reference Include="System.IO.Compression.FileSystem, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <HintPath>C:\Users\lukej\.nuget\packages\microsoft.netframework.referenceassemblies.net48\1.0.2\build\.NETFramework\v4.8\System.IO.Compression.FileSystem.dll</HintPath>
         </Reference>
@@ -68,6 +69,7 @@
         <Compile Include="MainForm.Designer.cs">
             <DependentUpon>MainForm.cs</DependentUpon>
         </Compile>
+        <Compile Include="NETDetect.cs" />
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <EmbeddedResource Include="MainForm.resx">

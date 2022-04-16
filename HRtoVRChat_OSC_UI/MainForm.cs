@@ -125,6 +125,27 @@ namespace HRtoVRChat_OSC_UI
                     }
                 }
             };
+
+            if (!NETDetect.IsNet6Installed)
+            {
+                bool install = false;
+                DialogResult dr = MessageBox.Show(".NET6 was not detected! Would you like to install it?",
+                    "HRtoVRChat_OSC_UI", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (dr == DialogResult.Yes)
+                    install = true;
+                else
+                {
+                    DialogResult dr2 =
+                        MessageBox.Show(
+                            "Are you sure? Not installing the .NET6 Runtime may cause issues. Install the .NET6 Runtime?",
+                            "HRtoVRChat_OSC_UI", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                    if (dr2 == DialogResult.Yes)
+                        install = true;
+                }
+
+                if (install)
+                    NETDetect.InstallNETSDK();
+            }
         }
 
         private void SetupConfigRadios()
