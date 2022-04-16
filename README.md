@@ -41,6 +41,7 @@ Please also consider contributing to add more support with other Heart Rate Moni
 | PulsoidSocket   | `pulsoidsocket` | https://github.com/pulsoid-oss/pulsoid-api#read_heart_rate_via_websocket |
 | TextFile        | `textfile`      | A .txt file containing only a number                                     |
 | Omnicept        | `omnicept`      | https://www.hp.com/us-en/vr/reverb-g2-vr-headset-omnicept-edition.html   |
+| SDK             | `sdk`           | https://github.com/200Tigersbloxed/HRtoVRChat_OSC/blob/main/SDK.md       |
 
 **[For a full list of all the supported devices, please click here](https://www.fortnite.lol/projects/hrtovrchat#h.mlz9fz56ioey)**
 
