@@ -7,6 +7,8 @@ using System.Linq;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
+using VRC.SDK3.Avatars.Components;
+using VRC.SDK3.Avatars.ScriptableObjects;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
@@ -296,11 +298,46 @@ namespace HRtoVRChat.Scripts
             animator.AddLayer(layer);
         }
 
+        /// <summary>
+        /// Adds parameters to an AvatarDescriptor
+        /// </summary>
+        /// <param name="avatarDescriptor">The target Avatar Descriptor</param>
+        /// <param name="parameter">The parameter to add</param>
+        private static bool AddVRCParameter(VRCAvatarDescriptor avatarDescriptor, VRCExpressionParameters.Parameter parameter)
+        {
+            // Make sure Parameters aren't null
+            if (avatarDescriptor.expressionParameters == null)
+                return false;
+            // Instantiate and Save to Database
+            VRCExpressionParameters newParameters = avatarDescriptor.expressionParameters;
+            string assetPath = AssetDatabase.GetAssetPath(avatarDescriptor.expressionParameters);
+            if (assetPath != String.Empty)
+            {
+                AssetDatabase.RemoveObjectFromAsset(avatarDescriptor.expressionParameters);
+                AssetDatabase.CreateAsset(newParameters, assetPath);
+                avatarDescriptor.expressionParameters = newParameters;
+            }
+            // Make sure the parameter doesn't already exist
+            VRCExpressionParameters.Parameter foundParameter = newParameters.FindParameter(parameter.name);
+            if (foundParameter == null || foundParameter.valueType != parameter.valueType)
+            {
+                // Add the parameter
+                List<VRCExpressionParameters.Parameter> betterParametersBecauseItsAListInstead =
+                    newParameters.parameters.ToList();
+                betterParametersBecauseItsAListInstead.Add(parameter);
+                newParameters.parameters = betterParametersBecauseItsAListInstead.ToArray();
+            }
+            return true;
+        }
+        
         public static void BeginProcess(GameObject Avatar, TargetHRObject HRObject, AnimatorController animator,
             string friendlyName = "HR", bool useSmallerHR = false, bool deleteComponentOnDone = false,
-            bool overwriteLayers = false)
+            bool overwriteLayers = false, bool writeDefaults = false, bool writeToParameters = false)
 
         {
+            VRCAvatarDescriptor descriptor = Avatar.GetComponent<VRCAvatarDescriptor>();
+            if (descriptor == null)
+                throw new Exception("Failed to get Avatar Descriptor!");
             Debug.Log("Creating Animations...");
             Dictionary<string, AnimationClip> generatedAnimations = new Dictionary<string, AnimationClip>();
             // Create the Animation Clips
@@ -420,6 +457,10 @@ namespace HRtoVRChat.Scripts
                 if (!DoesParameterExist(animator.parameters, AnimatorControllerParameterType.Int, "HR"))
                     animator.AddParameter("HR", AnimatorControllerParameterType.Int);
                 // Setup Layers
+                if(overwriteLayers)
+                    Debug.Log("Removing Duplicate Layers");
+                if(DoesLayerExist(animator.layers, friendlyName + "-master-hr") && overwriteLayers)
+                    animator.RemoveLayer(GetLayerIndexFromName(animator.layers, friendlyName + "-master-hr"));
                 Debug.Log("-- Creating Layers");
                 AnimatorControllerLayer masterLayer = new AnimatorControllerLayer
                 {
@@ -445,7 +486,7 @@ namespace HRtoVRChat.Scripts
                     AnimatorState _as = masterLayer.stateMachine.AddState(animationClip.Key);
                     // Exit
                     _as.motion = animationClip.Value;
-                    _as.writeDefaultValues = false;
+                    _as.writeDefaultValues = writeDefaults;
                     AnimatorStateTransition exit = _as.AddExitTransition();
                     exit.hasExitTime = false;
                     exit.hasFixedDuration = false;
@@ -459,9 +500,18 @@ namespace HRtoVRChat.Scripts
                     exit.AddCondition(AnimatorConditionMode.NotEqual, x, "HR");
                     x++;
                 }
-
-                if(DoesLayerExist(animator.layers, masterLayer.name) && overwriteLayers)
-                    animator.RemoveLayer(GetLayerIndexFromName(animator.layers, masterLayer.name));
+                // Apply Parameters
+                if (writeToParameters)
+                {
+                    Debug.Log("Adding Parameters");
+                    AddVRCParameter(descriptor, new VRCExpressionParameters.Parameter
+                    {
+                        name = "HR",
+                        defaultValue = 0,
+                        saved = false,
+                        valueType = VRCExpressionParameters.ValueType.Int
+                    });
+                }
             }
             else
             {
@@ -474,6 +524,14 @@ namespace HRtoVRChat.Scripts
                 if (!DoesParameterExist(animator.parameters, AnimatorControllerParameterType.Int, "hundredsHR"))
                     animator.AddParameter("hundredsHR", AnimatorControllerParameterType.Int);
                 // Setup Layers
+                if(overwriteLayers)
+                    Debug.Log("Removing Duplicate Layers");
+                if(DoesLayerExist(animator.layers, friendlyName + "-ones-hr") && overwriteLayers)
+                    animator.RemoveLayer(GetLayerIndexFromName(animator.layers, friendlyName + "-ones-hr"));
+                if(DoesLayerExist(animator.layers, friendlyName + "-tens-hr") && overwriteLayers)
+                    animator.RemoveLayer(GetLayerIndexFromName(animator.layers, friendlyName + "-tens-hr"));
+                if(DoesLayerExist(animator.layers, friendlyName + "-hundreds-hr") && overwriteLayers)
+                    animator.RemoveLayer(GetLayerIndexFromName(animator.layers, friendlyName + "-hundreds-hr"));
                 Debug.Log("-- Creating Layers");
                 AnimatorControllerLayer onesLayer = new AnimatorControllerLayer
                     {
@@ -538,7 +596,7 @@ namespace HRtoVRChat.Scripts
                     }
 
                     _as.motion = animationClip.Value;
-                    _as.writeDefaultValues = false;
+                    _as.writeDefaultValues = writeDefaults;
                     AnimatorStateTransition exit = _as.AddExitTransition();
                     exit.hasExitTime = false;
                     exit.hasFixedDuration = false;
@@ -550,13 +608,32 @@ namespace HRtoVRChat.Scripts
                     ast.AddCondition(AnimatorConditionMode.Equals, WordToNumber(split[1]), split[0] + "HR");
                     exit.AddCondition(AnimatorConditionMode.NotEqual, WordToNumber(split[1]), split[0] + "HR");
                 }
-
-                if(DoesLayerExist(animator.layers, onesLayer.name) && overwriteLayers)
-                    animator.RemoveLayer(GetLayerIndexFromName(animator.layers, onesLayer.name));
-                if(DoesLayerExist(animator.layers, tensLayer.name) && overwriteLayers)
-                    animator.RemoveLayer(GetLayerIndexFromName(animator.layers, tensLayer.name));
-                if(DoesLayerExist(animator.layers, hundredsLayer.name) && overwriteLayers)
-                    animator.RemoveLayer(GetLayerIndexFromName(animator.layers, hundredsLayer.name));
+                // Apply Parameters
+                if (writeToParameters)
+                {
+                    Debug.Log("Adding Parameters");
+                    AddVRCParameter(descriptor, new VRCExpressionParameters.Parameter
+                    {
+                        name = "onesHR",
+                        defaultValue = 0,
+                        saved = false,
+                        valueType = VRCExpressionParameters.ValueType.Int
+                    });
+                    AddVRCParameter(descriptor, new VRCExpressionParameters.Parameter
+                    {
+                        name = "tensHR",
+                        defaultValue = 0,
+                        saved = false,
+                        valueType = VRCExpressionParameters.ValueType.Int
+                    });
+                    AddVRCParameter(descriptor, new VRCExpressionParameters.Parameter
+                    {
+                        name = "hundredsHR",
+                        defaultValue = 0,
+                        saved = false,
+                        valueType = VRCExpressionParameters.ValueType.Int
+                    });
+                }
             }
 
             if (deleteComponentOnDone)
@@ -571,6 +648,7 @@ namespace HRtoVRChat.Scripts
         private static AnimatorWindow _instance;
         private static void NewGUILine() => GUILayout.Label("", EditorStyles.largeLabel);
         private static Vector2 buttonsScrollPos;
+        private static Vector2 optionsScrollPos;
 
         private TargetHRObject SelectedHRTarget;
 
@@ -578,6 +656,8 @@ namespace HRtoVRChat.Scripts
         private bool useSmallerHR = true;
         private bool overwriteLayers;
         private bool deleteComponentOnDone;
+        private bool writeDefaults;
+        private bool writeToParameters = true;
 
         [MenuItem("Window/HRtoVRChat_SDK")]
         private static void ShowWindow()
@@ -626,7 +706,8 @@ namespace HRtoVRChat.Scripts
                             AnimatorCreator.BeginProcess(SelectedHRTarget.AvatarRoot.gameObject, SelectedHRTarget,
                                 SelectedHRTarget.FXController, useSmallerHR: useSmallerHR,
                                 deleteComponentOnDone: deleteComponentOnDone, overwriteLayers: overwriteLayers,
-                                friendlyName: friendlyName);
+                                friendlyName: friendlyName, writeDefaults: writeDefaults,
+                                writeToParameters: writeToParameters);
                         }
                         catch (Exception e)
                         {
@@ -647,15 +728,22 @@ namespace HRtoVRChat.Scripts
             }
             GUILayout.Label("Options", EditorStyles.centeredGreyMiniLabel);
             NewGUILine();
+            optionsScrollPos = GUILayout.BeginScrollView(optionsScrollPos);
             friendlyName = EditorGUILayout.TextField("friendlyName", friendlyName);
             GUILayout.Label("Sets a name for the HRObject when creating");
-            GUILayout.Label("This should be changed for every creation on the same avatar", EditorStyles.miniLabel);
+            GUILayout.Label("This should be changed for every creation in the same Unity Project", EditorStyles.miniLabel);
             useSmallerHR = GUILayout.Toggle(useSmallerHR, "Use one HR parameter");
             GUILayout.Label("Uses only one HR parameter instead of the conventional three parameters");
+            writeToParameters = GUILayout.Toggle(writeToParameters, "Write to Expression Parameters");
+            GUILayout.Label("Will write all expression parameters to the AvatarDescriptor's\nexpression parameters");
             deleteComponentOnDone = GUILayout.Toggle(deleteComponentOnDone, "Delete the TargetHRObject Component");
             GUILayout.Label("Deletes the TargetHRObject Component when finished");
             overwriteLayers = GUILayout.Toggle(overwriteLayers, "Overwrite existing layers");
             GUILayout.Label("Deletes layers if they already exist");
+            writeDefaults = GUILayout.Toggle(writeDefaults, "Write Defaults");
+            GUILayout.Label("Whether or not the AnimatorStates writes back the default values\nfor properties that are not animated by its Motion.");
+            GUILayout.Label("This is recommended off by VRChat", EditorStyles.boldLabel);
+            GUILayout.EndScrollView();
             // END BODY
         }
 

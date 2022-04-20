@@ -12,6 +12,23 @@ public abstract class HRSDK
         client = new SimpleTcpClient(ipPort);
         client.Events.Connected += (sender, args) => OnSDKOpened();
         client.Events.Disconnected += (sender, args) => OnSDKClosed();
+        client.Events.DataReceived += (sender, args) =>
+        {
+            try
+            {
+                byte[] data = args.Data;
+                object? fakeDeserialize = Messages.DeserializeMessage(data);
+                string messageType = Messages.GetMessageType(fakeDeserialize);
+                switch (messageType)
+                {
+                    case "HRMessage":
+                        Messages.HRMessage hrm = Messages.DeserializeMessage<Messages.HRMessage>(data);
+                        OnSDKData(hrm);
+                        break;
+                }
+            }
+            catch(Exception){}
+        };
         if(autoOpen)
             Open();
     }
@@ -21,6 +38,7 @@ public abstract class HRSDK
     public abstract bool IsActive { get; set; }
 
     public virtual void OnSDKOpened(){}
+    public virtual void OnSDKData(Messages.HRMessage message){}
     public virtual void OnSDKClosed(){}
 
     public void Update()
@@ -34,6 +52,16 @@ public abstract class HRSDK
                 IsActive = IsActive
             };
             byte[] data = hrm.Serialize();
+            client?.Send(data);
+        }
+    }
+
+    public void RequestHRData()
+    {
+        if (isClientConnected)
+        {
+            Messages.GetHRData ghrd = new Messages.GetHRData();
+            byte[] data = ghrd.Serialize();
             client?.Send(data);
         }
     }

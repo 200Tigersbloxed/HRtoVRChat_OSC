@@ -50,6 +50,13 @@ public class Messages
         [ProtoMember(4)]
         public bool IsActive { get; set; }
     }
+    
+    [ProtoContract]
+    public class GetHRData : MessageTools
+    {
+        [ProtoMember(1)]
+        public readonly string MessageType = "GetHRData";
+    }
 }
 
 public class MessageTools
@@ -69,6 +76,7 @@ public static class MessageCache
 {
     public static readonly List<Type> MessageTypes = new List<Type>
     {
-        typeof(Messages.HRMessage)
+        typeof(Messages.HRMessage),
+        typeof(Messages.GetHRData)
     };
 }

@@ -126,7 +126,7 @@ namespace HRtoVRChat_OSC_UI
                 }
             };
 
-            if (!NETDetect.IsNet6Installed)
+            if (!NETDetect.IsNet6Installed())
             {
                 bool install = false;
                 DialogResult dr = MessageBox.Show(".NET6 was not detected! Would you like to install it?",

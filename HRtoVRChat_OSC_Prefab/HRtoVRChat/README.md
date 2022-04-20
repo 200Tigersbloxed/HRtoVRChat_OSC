@@ -71,19 +71,24 @@ The GitHub button will just take you to the GitHub Repository.
 Underneath the `Discovered TargetHRObjects` header, you will see a list of buttons that correspond to every GameObject in the scene that has a TargetHRObject Component.
 Click the button for the HRContainer you'll be working with.
 
-You will then see a label Saying `SelectedHRTarget: [name]` (1), click that.
+After clicking that button, you will then see a label Saying `SelectedHRTarget: [name]` (1), this should the same name of the button you just clicked.
 
-You may press the `Create Animations!` Button (3) whenever you're ready to continue.
+After setting any options, you may now press the `Create Animations!` Button (3) whenever you're ready to continue.
 
 #### Options (2)
 
 + friendlyName - An identifier to be used in the Layers corresponding to your HRContainer
-  + This should be different for each HRContainer
+  + This should be different for each HRContainer in the same Unity Project
+  + This is because all animations output to an output folder (inside of the HRtoVRChat folder), underneath this name, so having the same name will overwrite other AnimationClips.
 + useSmallerHR - Uses only one HR int parameter instead of the conventional three parameters
   + Note: This will lock your HR from 0-255, but to be fair, if your HR is over 255, you need to go to the ER.
++ writeToParameters - Will write all required parameters to your expression parameters.
 + deleteComponentOnDone - Will remove the TargetHRObject Component on the HRContainer when finished
 + overwriteLayers - Will overwrite all layers that have the same name
   + This will not overwrite any of your layers outside of the HR Layers.
++ writeDefaults - Whether or not to enable Write Defaults
+  + Write Defaults are "whether or not the AnimatorStates writes back the default values for properties that are not animated by its Motion."
+  + [**VRChat recommends this be off**](https://docs.vrchat.com/docs/avatars-30#write-defaults-on-states)
 
 ![The Editor Window](https://i.imgur.com/6DCNRfa.png)
 
@@ -93,25 +98,31 @@ If you get a Dialog Window saying 'Failed to Complete Operation!', then please c
 
 ### Finishing Up
 
-Once the process is complete, make sure to Apply your FX Controller to your Avatar
+~~Once the process is complete, make sure to Apply your FX Controller to your Avatar~~
 
-Don't forget to add any parameters used to your Expression Parameters
+**As of 19/04/2022, parameters will now be added to your parameter sheet automatically.**
 
-**If you used a Smaller HR**:
+*(if enabled)*
 
-Add the `HR` (int) Parameter
+*please for the love of all, make a backup in case something goes wrong*
 
-**If you did NOT use a Smaller HR**:
-
-Add the following Parameters:
-+ `onesHR` (int)
-+ `tensHR` (int)
-+ `hundredsHR` (int)
-
-Now you're all set to publish!
+> **In case if you still want to add them manually**:
+> 
+> Don't forget to add any parameters used to your Expression Parameters
+> 
+> **If you used a Smaller HR**:
+> 
+> Add the `HR` (int) Parameter
+> 
+> **If you did NOT use a Smaller HR**:
+> 
+> Add the following Parameters:
+> + `onesHR` (int)
+> + `tensHR` (int)
+> + `hundredsHR` (int)
+> 
+> Now you're all set to publish!
 
 ## Source Code
 
-All code is visible in the `Scripts` folder (under the respective LICENSE), but
-is also mirrored at 
-[this gist](https://gist.github.com/200Tigersbloxed/6c5798cb959b8073deaf5d6a3c17454f)
+All code is visible in the `Scripts` folder (under the respective LICENSE), and is open on the GitHub Repository

@@ -40,6 +40,15 @@ public class SDKManager : HRManager
                         isActive = hrm.IsActive;
                         isOpen = hrm.IsOpen;
                         break;
+                    case "GetHRData":
+                        Messages.HRMessage hrm_ghrd = new Messages.HRMessage
+                        {
+                            HR = HR,
+                            IsActive = isActive,
+                            IsOpen = isOpen
+                        };
+                        server.Send(args.IpPort, hrm_ghrd.Serialize());
+                        break;
                     default:
                         LogHelper.Warn("Unknown Debug Message: " + messageType);
                         break;
