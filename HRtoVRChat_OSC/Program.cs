@@ -143,7 +143,9 @@ namespace HRtoVRChat_OSC
                     LogHelper.Log("Stopped HRBeat");
                     break;
                 case "refreshconfig":
+                    ParamsManager.ResetParams();
                     ConfigManager.CreateConfig();
+                    ParamsManager.InitParams();
                     break;
                 default:
                     LogHelper.Warn($"Unknown Command \"{inputs[0]}\"!");
@@ -179,7 +181,7 @@ namespace HRtoVRChat_OSC
             StartHRListener();
             // Start Coroutine
             BoopUwUTimer = new CustomTimer(1000, (ct) => BoopUwU());
-            LogHelper.Debug("Started");
+            LogHelper.Log("Started");
         }
 
         private static void Stop(bool quitApp = false, bool autoStart = false)
@@ -201,7 +203,7 @@ namespace HRtoVRChat_OSC
             // Stop Extraneous Tasks
             if (loopCheck?.IsRunning ?? false)
                 loopCheck.Close();
-            LogHelper.Debug("Stopped");
+            LogHelper.Log("Stopped");
             // Quit the App
             if (quitApp)
                 Environment.Exit(1);
@@ -286,6 +288,15 @@ namespace HRtoVRChat_OSC
                     activeHRManager.Init(ConfigManager.LoadedConfig.hyperateSessionId);
                     break;
                 case HRType.Pulsoid:
+                    LogHelper.Warn("\n=========================================================================================\n" +
+                                   "WARNING ABOUT PUSLOID\n" +
+                                   "It is detected that you're using the Pulsoid Method for grabbing HR Data,\n" +
+                                   "Please note that this method will soon be DEPRECATED and replaced with PusloidSocket!\n" +
+                                   "Please see the URL below on how to upgrade!\n" +
+                                   "https://github.com/200Tigersbloxed/HRtoVRChat_OSC/wiki/Upgrading-from-Pulsoid-to-PulsoidSocket \n" +
+                                   "=========================================================================================\n\n" +
+                                   "Starting Pulsoid in 25 Seconds...");
+                    Thread.Sleep(25000);
                     activeHRManager = new PulsoidManager();
                     activeHRManager.Init(ConfigManager.LoadedConfig.pulsoidwidget);
                     break;
@@ -325,7 +336,7 @@ namespace HRtoVRChat_OSC
                 btToken = new CancellationTokenSource();
                 BeatThread = new Thread(() =>
                 {
-                    LogHelper.Debug("Starting Beating!");
+                    LogHelper.Log("Starting Beating!");
                     RunHeartBeat = true;
                     HeartBeat();
                 });
@@ -397,7 +408,7 @@ namespace HRtoVRChat_OSC
                         {
                             if (waited)
                             {
-                                LogHelper.Debug("Found ActiveHRManager! Starting HeartBeat.");
+                                LogHelper.Log("Found ActiveHRManager! Starting HeartBeat.");
                                 waited = false;
                             }
                             OnHeartBeatUpdate.Invoke(false, false);

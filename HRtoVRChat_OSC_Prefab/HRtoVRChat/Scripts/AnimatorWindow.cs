@@ -329,6 +329,11 @@ namespace HRtoVRChat.Scripts
             }
             return true;
         }
+
+        public static string HR_paramname = "HR";
+        public static string onesHR_paramname = "onesHR";
+        public static string tensHR_paramname = "tensHR";
+        public static string hundredsHR_paramname = "hundredsHR";
         
         public static void BeginProcess(GameObject Avatar, TargetHRObject HRObject, AnimatorController animator,
             string friendlyName = "HR", bool useSmallerHR = false, bool deleteComponentOnDone = false,
@@ -454,8 +459,8 @@ namespace HRtoVRChat.Scripts
             {
                 // Only one HR Parameter
                 Debug.Log("-- Adding Parameter(s)");
-                if (!DoesParameterExist(animator.parameters, AnimatorControllerParameterType.Int, "HR"))
-                    animator.AddParameter("HR", AnimatorControllerParameterType.Int);
+                if (!DoesParameterExist(animator.parameters, AnimatorControllerParameterType.Int, HR_paramname))
+                    animator.AddParameter(HR_paramname, AnimatorControllerParameterType.Int);
                 // Setup Layers
                 if(overwriteLayers)
                     Debug.Log("Removing Duplicate Layers");
@@ -506,7 +511,7 @@ namespace HRtoVRChat.Scripts
                     Debug.Log("Adding Parameters");
                     AddVRCParameter(descriptor, new VRCExpressionParameters.Parameter
                     {
-                        name = "HR",
+                        name = HR_paramname,
                         defaultValue = 0,
                         saved = false,
                         valueType = VRCExpressionParameters.ValueType.Int
@@ -517,12 +522,12 @@ namespace HRtoVRChat.Scripts
             {
                 // Only one HR Parameter
                 Debug.Log("-- Adding Parameter(s)");
-                if (!DoesParameterExist(animator.parameters, AnimatorControllerParameterType.Int, "onesHR"))
-                    animator.AddParameter("onesHR", AnimatorControllerParameterType.Int);
-                if (!DoesParameterExist(animator.parameters, AnimatorControllerParameterType.Int, "tensHR"))
-                    animator.AddParameter("tensHR", AnimatorControllerParameterType.Int);
-                if (!DoesParameterExist(animator.parameters, AnimatorControllerParameterType.Int, "hundredsHR"))
-                    animator.AddParameter("hundredsHR", AnimatorControllerParameterType.Int);
+                if (!DoesParameterExist(animator.parameters, AnimatorControllerParameterType.Int, onesHR_paramname))
+                    animator.AddParameter(onesHR_paramname, AnimatorControllerParameterType.Int);
+                if (!DoesParameterExist(animator.parameters, AnimatorControllerParameterType.Int, tensHR_paramname))
+                    animator.AddParameter(tensHR_paramname, AnimatorControllerParameterType.Int);
+                if (!DoesParameterExist(animator.parameters, AnimatorControllerParameterType.Int, hundredsHR_paramname))
+                    animator.AddParameter(hundredsHR_paramname, AnimatorControllerParameterType.Int);
                 // Setup Layers
                 if(overwriteLayers)
                     Debug.Log("Removing Duplicate Layers");
@@ -614,21 +619,21 @@ namespace HRtoVRChat.Scripts
                     Debug.Log("Adding Parameters");
                     AddVRCParameter(descriptor, new VRCExpressionParameters.Parameter
                     {
-                        name = "onesHR",
+                        name = onesHR_paramname,
                         defaultValue = 0,
                         saved = false,
                         valueType = VRCExpressionParameters.ValueType.Int
                     });
                     AddVRCParameter(descriptor, new VRCExpressionParameters.Parameter
                     {
-                        name = "tensHR",
+                        name = tensHR_paramname,
                         defaultValue = 0,
                         saved = false,
                         valueType = VRCExpressionParameters.ValueType.Int
                     });
                     AddVRCParameter(descriptor, new VRCExpressionParameters.Parameter
                     {
-                        name = "hundredsHR",
+                        name = hundredsHR_paramname,
                         defaultValue = 0,
                         saved = false,
                         valueType = VRCExpressionParameters.ValueType.Int
@@ -724,6 +729,22 @@ namespace HRtoVRChat.Scripts
                             "and an FX Layer on the component", "OK");
                     }
                 }
+
+                if (GUILayout.Button("Convert Materials To Quest"))
+                {
+                    SelectedHRTarget.OnesMaterials.SetMaterialsToQuest();
+                    SelectedHRTarget.TensMaterials.SetMaterialsToQuest();
+                    SelectedHRTarget.HundredsMaterials.SetMaterialsToQuest();
+                    SelectedHRTarget.SetMaterialToQuest();
+                }
+                
+                if (GUILayout.Button("Convert Materials To Standard"))
+                {
+                    SelectedHRTarget.OnesMaterials.SetMaterialsToStandard();
+                    SelectedHRTarget.TensMaterials.SetMaterialsToStandard();
+                    SelectedHRTarget.HundredsMaterials.SetMaterialsToStandard();
+                    SelectedHRTarget.SetMaterialToStandard();
+                }
                 NewGUILine();
             }
             GUILayout.Label("Options", EditorStyles.centeredGreyMiniLabel);
@@ -732,17 +753,37 @@ namespace HRtoVRChat.Scripts
             friendlyName = EditorGUILayout.TextField("friendlyName", friendlyName);
             GUILayout.Label("Sets a name for the HRObject when creating");
             GUILayout.Label("This should be changed for every creation in the same Unity Project", EditorStyles.miniLabel);
+            NewGUILine();
             useSmallerHR = GUILayout.Toggle(useSmallerHR, "Use one HR parameter");
             GUILayout.Label("Uses only one HR parameter instead of the conventional three parameters");
+            NewGUILine();
             writeToParameters = GUILayout.Toggle(writeToParameters, "Write to Expression Parameters");
             GUILayout.Label("Will write all expression parameters to the AvatarDescriptor's\nexpression parameters");
+            NewGUILine();
             deleteComponentOnDone = GUILayout.Toggle(deleteComponentOnDone, "Delete the TargetHRObject Component");
             GUILayout.Label("Deletes the TargetHRObject Component when finished");
+            NewGUILine();
             overwriteLayers = GUILayout.Toggle(overwriteLayers, "Overwrite existing layers");
             GUILayout.Label("Deletes layers if they already exist");
+            NewGUILine();
             writeDefaults = GUILayout.Toggle(writeDefaults, "Write Defaults");
             GUILayout.Label("Whether or not the AnimatorStates writes back the default values\nfor properties that are not animated by its Motion.");
             GUILayout.Label("This is recommended off by VRChat", EditorStyles.boldLabel);
+            NewGUILine();
+            AnimatorCreator.HR_paramname = EditorGUILayout.TextField("HR Parameter Name", AnimatorCreator.HR_paramname);
+            GUILayout.Label("Parameter name to be used for the parameter HR");
+            NewGUILine();
+            AnimatorCreator.onesHR_paramname =
+                EditorGUILayout.TextField("onesHR Parameter Name", AnimatorCreator.onesHR_paramname);
+            GUILayout.Label("Parameter name to be used for the parameter onesHR");
+            NewGUILine();
+            AnimatorCreator.tensHR_paramname =
+                EditorGUILayout.TextField("tensHR Parameter Name", AnimatorCreator.tensHR_paramname);
+            GUILayout.Label("Parameter name to be used for the parameter tensHR");
+            NewGUILine();
+            AnimatorCreator.hundredsHR_paramname =
+                EditorGUILayout.TextField("hundredsHR Parameter Name", AnimatorCreator.hundredsHR_paramname);
+            GUILayout.Label("Parameter name to be used for the parameter hundredsHR");
             GUILayout.EndScrollView();
             // END BODY
         }

@@ -89,6 +89,14 @@ After setting any options, you may now press the `Create Animations!` Button (3)
 + writeDefaults - Whether or not to enable Write Defaults
   + Write Defaults are "whether or not the AnimatorStates writes back the default values for properties that are not animated by its Motion."
   + [**VRChat recommends this be off**](https://docs.vrchat.com/docs/avatars-30#write-defaults-on-states)
++ HR_paramname
+  + Defines the parameter name to use for the HR parameter
++ onesHR_paramname
+  + Defines the parameter name to use for the onesHR parameter
++ tensHR_paramname
+  + Defines the parameter name to use for the tensHR parameter
++ hundredsHR_paramname
+  + Defines the parameter name to use for the hundredsHR parameter
 
 ![The Editor Window](https://i.imgur.com/6DCNRfa.png)
 

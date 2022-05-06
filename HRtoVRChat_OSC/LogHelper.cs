@@ -19,7 +19,7 @@ namespace HRtoVRChat_OSC
         {
             StackFrame frame = new StackFrame(1);
             Console.ForegroundColor = color;
-            Console.WriteLine($"[{time}] [{frame.GetMethod()?.DeclaringType}]: {obj}");
+            Console.WriteLine($"[{time}] [{frame.GetMethod()?.DeclaringType}] (LOG): {obj}");
             Console.ForegroundColor = ConsoleColor.White;
         }
 
@@ -27,7 +27,7 @@ namespace HRtoVRChat_OSC
         {
             StackFrame frame = new StackFrame(1);
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"[{time}] [{frame.GetMethod()?.DeclaringType}]: {obj}");
+            Console.WriteLine($"[{time}] [{frame.GetMethod()?.DeclaringType}] (WARN): {obj}");
             Console.ForegroundColor = ConsoleColor.White;
         }
 
@@ -35,7 +35,7 @@ namespace HRtoVRChat_OSC
         {
             StackFrame frame = new StackFrame(1);
             Console.ForegroundColor = ConsoleColor.Red;
-            object log = $"[{time}] [{frame.GetMethod()?.DeclaringType}:{frame.GetMethod()}]: {obj}";
+            object log = $"[{time}] [{frame.GetMethod()?.DeclaringType}:{frame.GetMethod()}] (ERROR): {obj}";
             if (e != null)
                 log = $"{log} | Exception: {e}";
             Console.WriteLine(log);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -15,12 +16,14 @@ namespace HRtoVRChat_OSC_UI
     {
         public static Action<int> processProgressChanged = i => { };
         public static Action<int> overallProgressChanged = i => { };
-        public static Action<string> UpdateConsoleOutput = s => { };
+        public static Action<string, string> UpdateConsoleOutput = (s, oc) => { };
         private bool gotLocalVersion;
         private string localVersion;
         private bool gotCloudVersion;
 
         public bool IsOSCRunning => Process.GetProcessesByName("HRtoVRChat_OSC").Length > 0;
+
+        private string lastLineColor = "White";
         
         public MainForm()
         {
@@ -53,7 +56,7 @@ namespace HRtoVRChat_OSC_UI
                 try
                 {
                     myStreamWriter?.WriteLine("exit");
-                    UpdateConsoleOutput.Invoke("> exit");
+                    UpdateConsoleOutput.Invoke("> exit", "Purple");
                     myStreamWriter?.Close();
                     CurrentProcess?.Kill();
                 }
@@ -66,17 +69,31 @@ namespace HRtoVRChat_OSC_UI
                     try
                     {
                         myStreamWriter?.WriteLine(commandInput.Text);
-                        UpdateConsoleOutput.Invoke("> " + commandInput.Text);
+                        UpdateConsoleOutput.Invoke("> " + commandInput.Text, "Purple");
                         commandInput.Text = String.Empty;
                     }
                     catch(Exception){}
                 }
             };
-            UpdateConsoleOutput += s => Invoke((Action)(() =>
+            UpdateConsoleOutput += (s, oc) => Invoke((Action)(() =>
             {
-                richTextBox1.Text = richTextBox1.Text + "\n" + s;
-                richTextBox1.SelectionStart = richTextBox1.Text.Length;
-                richTextBox1.ScrollToCaret();
+                if (s != null)
+                {
+                    string color = s.Contains("(DEBUG)") ? "DarkGray" :
+                        s.Contains("(LOG)") ? "White" :
+                        s.Contains("(WARN)") ? "Yellow" :
+                        s.Contains("(ERROR)") ? "Red" : lastLineColor;
+                    if (!string.IsNullOrEmpty(oc))
+                        color = oc;
+                    richTextBox1.AppendText("\n" + s);
+                    // Set Color
+                    richTextBox1.Select(richTextBox1.Text.Length - ("\n".Length + s.Length), richTextBox1.Text.Length);
+                    richTextBox1.SelectionColor = Color.FromName(color);
+                    lastLineColor = color;
+                    // Move to end
+                    richTextBox1.SelectionStart = richTextBox1.Text.Length;
+                    richTextBox1.ScrollToCaret();
+                }
             }));
             System.Timers.Timer timer = new System.Timers.Timer(2500)
             {
@@ -124,6 +141,11 @@ namespace HRtoVRChat_OSC_UI
                     {
                     }
                 }
+            };
+
+            richTextBox1.LinkClicked += (sender, args) =>
+            {
+                Process.Start(args.LinkText);
             };
 
             if (!NETDetect.IsNet6Installed())
@@ -331,7 +353,7 @@ namespace HRtoVRChat_OSC_UI
                     };
                     exec.OutputDataReceived += (sender, eventArgs) =>
                     {
-                        UpdateConsoleOutput.Invoke(eventArgs.Data);
+                        UpdateConsoleOutput.Invoke(eventArgs.Data, String.Empty);
                     };
                     exec.Start();
                     exec.StandardInput.AutoFlush = true;

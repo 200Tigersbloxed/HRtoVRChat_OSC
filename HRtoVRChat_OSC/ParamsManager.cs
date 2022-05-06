@@ -6,9 +6,9 @@
 
         public static void InitParams()
         {
-            Parameters.Add(new IntParameter(hro => hro.ones, "onesHR"));
-            Parameters.Add(new IntParameter(hro => hro.tens, "tensHR"));
-            Parameters.Add(new IntParameter(hro => hro.hundreds, "hundredsHR"));
+            Parameters.Add(new IntParameter(hro => hro.ones, ConfigManager.LoadedConfig.ParameterNames["onesHR"]));
+            Parameters.Add(new IntParameter(hro => hro.tens, ConfigManager.LoadedConfig.ParameterNames["tensHR"]));
+            Parameters.Add(new IntParameter(hro => hro.hundreds, ConfigManager.LoadedConfig.ParameterNames["hundredsHR"]));
             Parameters.Add(new IntParameter((hro) =>
             {
                 string HRstring = $"{hro.hundreds}{hro.tens}{hro.ones}";
@@ -26,7 +26,7 @@
                 if (HR < 0)
                     HR = 0;
                 return HR;
-            }, "HR"));
+            }, ConfigManager.LoadedConfig.ParameterNames["HR"]));
             Parameters.Add(new FloatParameter((hro) =>
             {
                 float targetFloat = 0f;
@@ -40,10 +40,10 @@
                 else
                     targetFloat = (HR - minhr) / (maxhr - minhr);
                 return targetFloat;
-            }, "HRPercent"));
-            Parameters.Add(new BoolParameter(hro => hro.isActive, "isHRActive"));
-            Parameters.Add(new BoolParameter(hro => hro.isConnected, "isHRConnected"));
-            Parameters.Add(new BoolParameter(BoolCheckType.HeartBeat, "isHRBeat"));
+            }, ConfigManager.LoadedConfig.ParameterNames["HRPercent"]));
+            Parameters.Add(new BoolParameter(hro => hro.isActive, ConfigManager.LoadedConfig.ParameterNames["isHRActive"]));
+            Parameters.Add(new BoolParameter(hro => hro.isConnected, ConfigManager.LoadedConfig.ParameterNames["isHRConnected"]));
+            Parameters.Add(new BoolParameter(BoolCheckType.HeartBeat, ConfigManager.LoadedConfig.ParameterNames["isHRBeat"]));
         }
 
         public static void ResetParams()

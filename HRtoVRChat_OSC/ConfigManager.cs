@@ -55,7 +55,7 @@ namespace HRtoVRChat_OSC
         [TommyComment("(PulsoidSocket Only) The key for the OAuth API to pull HeartRate Data from")]
         [TommyInclude]
         public string pulsoidkey = String.Empty;
-        [TommyComment("(TextFile Onlu) The location of the text file to pull HeartRate Data from")]
+        [TommyComment("(TextFile Only) The location of the text file to pull HeartRate Data from")]
         [TommyInclude]
         public string textfilelocation = String.Empty;
         [TommyComment("The maximum HR for HRPercent")]
@@ -64,5 +64,18 @@ namespace HRtoVRChat_OSC
         [TommyComment("The minimum HR for HRPercent")]
         [TommyInclude]
         public double MinHR = 0;
+        [TommyComment("A dictionary containing what names to use for default parameters. DON'T CHANGE THE KEYS, CHANGE THE VALUES!")]
+        [TommyInclude]
+        public Dictionary<string, string> ParameterNames = new Dictionary<string, string>
+        {
+            ["onesHR"] = "onesHR",
+            ["tensHR"] = "tensHR",
+            ["hundredsHR"] = "hundredsHR",
+            ["isHRConnected"] = "isHRConnected",
+            ["isHRActive"] = "isHRActive",
+            ["isHRBeat"] = "isHRBeat",
+            ["HRPercent"] = "HRPercent",
+            ["HR"] = "HR"
+        };
     }
 }
