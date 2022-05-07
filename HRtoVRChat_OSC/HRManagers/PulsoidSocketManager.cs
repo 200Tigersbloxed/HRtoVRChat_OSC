@@ -98,9 +98,12 @@ namespace HRtoVRChat_OSC.HRManagers
                             if (jo != null)
                                 try
                                 {
-                                    parsedHR = jo["data"]["heartRate"].Value<int>();
+                                    parsedHR = jo["data"]["heart_rate"].Value<int>();
                                 }
-                                catch (Exception){}
+                                catch (Exception)
+                                {
+                                    LogHelper.Error("Failed to parse Herat Rate!");
+                                }
                         }
                     }
 
