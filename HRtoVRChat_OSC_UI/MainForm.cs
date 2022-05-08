@@ -178,6 +178,7 @@ namespace HRtoVRChat_OSC_UI
             fitbitURLRadioButton.CheckedChanged += (sender, args) => NewConfigRadioSelected(fitbitURLRadioButton);
             hyperateSessionIdRadioButton.CheckedChanged += (sender, args) => NewConfigRadioSelected(hyperateSessionIdRadioButton);
             pulsoidwidgetRadioButton.CheckedChanged += (sender, args) => NewConfigRadioSelected(pulsoidwidgetRadioButton);
+            stromnoWidgetId.CheckedChanged += (sender, args) => NewConfigRadioSelected(stromnoWidgetId);
             pulsoidkeyRadioButton.CheckedChanged += (sender, args) => NewConfigRadioSelected(pulsoidkeyRadioButton);
             textfilelocationRadioButton.CheckedChanged += (sender, args) => NewConfigRadioSelected(textfilelocationRadioButton);
             MaxHRRadioButton.CheckedChanged += (sender, args) => NewConfigRadioSelected(MaxHRRadioButton);

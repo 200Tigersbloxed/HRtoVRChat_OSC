@@ -249,6 +249,9 @@ namespace HRtoVRChat_OSC
                 case "pulsoid":
                     hrt = HRType.Pulsoid;
                     break;
+                case "stromno":
+                    hrt = HRType.Stromno;
+                    break;
                 case "pulsoidsocket":
                     hrt = HRType.PulsoidSocket;
                     break;
@@ -299,6 +302,10 @@ namespace HRtoVRChat_OSC
                     Thread.Sleep(25000);
                     activeHRManager = new PulsoidManager();
                     activeHRManager.Init(ConfigManager.LoadedConfig.pulsoidwidget);
+                    break;
+                case HRType.Stromno:
+                    activeHRManager = new PulsoidManager();
+                    activeHRManager.Init(ConfigManager.LoadedConfig.stromnowidget);
                     break;
                 case HRType.PulsoidSocket:
                     activeHRManager = new PulsoidSocketManager();
@@ -500,6 +507,7 @@ namespace HRtoVRChat_OSC
             FitbitHRtoWS,
             HypeRate,
             Pulsoid,
+            Stromno,
             PulsoidSocket,
             TextFile,
             Omnicept,

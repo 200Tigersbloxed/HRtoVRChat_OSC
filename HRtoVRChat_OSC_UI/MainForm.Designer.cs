@@ -55,6 +55,7 @@
             this.availableVersionLabel = new MaterialSkin.Controls.MaterialLabel();
             this.currentVersionLabel = new MaterialSkin.Controls.MaterialLabel();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.stromnoWidgetId = new MaterialSkin.Controls.MaterialRadioButton();
             this.configType = new MaterialSkin.Controls.MaterialLabel();
             this.configValueInput = new MaterialSkin.Controls.MaterialTextBox();
             this.configDescriptionLabel = new MaterialSkin.Controls.MaterialLabel();
@@ -438,6 +439,7 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.stromnoWidgetId);
             this.tabPage3.Controls.Add(this.configType);
             this.tabPage3.Controls.Add(this.configValueInput);
             this.tabPage3.Controls.Add(this.configDescriptionLabel);
@@ -462,6 +464,21 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Config";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // stromnoWidgetId
+            // 
+            this.stromnoWidgetId.Depth = 0;
+            this.stromnoWidgetId.Location = new System.Drawing.Point(3, 127);
+            this.stromnoWidgetId.Margin = new System.Windows.Forms.Padding(0);
+            this.stromnoWidgetId.MouseLocation = new System.Drawing.Point(-1, -1);
+            this.stromnoWidgetId.MouseState = MaterialSkin.MouseState.HOVER;
+            this.stromnoWidgetId.Name = "stromnoWidgetId";
+            this.stromnoWidgetId.Ripple = true;
+            this.stromnoWidgetId.Size = new System.Drawing.Size(171, 28);
+            this.stromnoWidgetId.TabIndex = 20;
+            this.stromnoWidgetId.TabStop = true;
+            this.stromnoWidgetId.Text = "stromnowidget";
+            this.stromnoWidgetId.UseVisualStyleBackColor = true;
             // 
             // configType
             // 
@@ -561,7 +578,7 @@
             // MaxHRRadioButton
             // 
             this.MaxHRRadioButton.Depth = 0;
-            this.MaxHRRadioButton.Location = new System.Drawing.Point(3, 155);
+            this.MaxHRRadioButton.Location = new System.Drawing.Point(3, 183);
             this.MaxHRRadioButton.Margin = new System.Windows.Forms.Padding(0);
             this.MaxHRRadioButton.MouseLocation = new System.Drawing.Point(-1, -1);
             this.MaxHRRadioButton.MouseState = MaterialSkin.MouseState.HOVER;
@@ -591,7 +608,7 @@
             // pulsoidkeyRadioButton
             // 
             this.pulsoidkeyRadioButton.Depth = 0;
-            this.pulsoidkeyRadioButton.Location = new System.Drawing.Point(3, 127);
+            this.pulsoidkeyRadioButton.Location = new System.Drawing.Point(3, 155);
             this.pulsoidkeyRadioButton.Margin = new System.Windows.Forms.Padding(0);
             this.pulsoidkeyRadioButton.MouseLocation = new System.Drawing.Point(-1, -1);
             this.pulsoidkeyRadioButton.MouseState = MaterialSkin.MouseState.HOVER;
@@ -782,7 +799,7 @@
 
         private MaterialSkin.Controls.MaterialRadioButton ipRadioButton;
 
-        private MaterialSkin.Controls.MaterialRadioButton materialRadioButton1;
+        private MaterialSkin.Controls.MaterialRadioButton stromnoWidgetId;
         private MaterialSkin.Controls.MaterialLabel materialLabel6;
 
         private MaterialSkin.Controls.MaterialDivider materialDivider1;

@@ -44,10 +44,13 @@ namespace HRtoVRChat_OSC_UI
         [TommyComment("(Pulsoid Only) The widgetId to pull HeartRate Data from")]
         [TommyInclude]
         public string pulsoidwidget = String.Empty;
+        [TommyComment("(Stromno Only) The widgetId to pull HeartRate Data from Stromno")]
+        [TommyInclude]
+        public string stromnowidget = String.Empty;
         [TommyComment("(PulsoidSocket Only) The key for the OAuth API to pull HeartRate Data from")]
         [TommyInclude]
         public string pulsoidkey = String.Empty;
-        [TommyComment("(TextFile Onlu) The location of the text file to pull HeartRate Data from")]
+        [TommyComment("(TextFile Only) The location of the text file to pull HeartRate Data from")]
         [TommyInclude]
         public string textfilelocation = String.Empty;
         [TommyComment("The maximum HR for HRPercent")]

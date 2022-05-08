@@ -49,9 +49,12 @@ namespace HRtoVRChat_OSC
         [TommyComment("(HypeRate Only) The code to pull HypeRate Data from")]
         [TommyInclude]
         public string hyperateSessionId = String.Empty;
-        [TommyComment("(Pulsoid Only) The widgetId to pull HeartRate Data from")]
+        [TommyComment("(Pulsoid Only) The widgetId to pull HeartRate Data from Pulsoid")]
         [TommyInclude]
         public string pulsoidwidget = String.Empty;
+        [TommyComment("(Stromno Only) The widgetId to pull HeartRate Data from Stromno")]
+        [TommyInclude]
+        public string stromnowidget = String.Empty;
         [TommyComment("(PulsoidSocket Only) The key for the OAuth API to pull HeartRate Data from")]
         [TommyInclude]
         public string pulsoidkey = String.Empty;
