@@ -27,7 +27,7 @@ namespace HRtoVRChat_OSC
         }
         catch(Exception e)
         {
-            LogHelper.Error("Failed to connect to HypeRate server! Exception: ", e);
+            LogHelper.Error("Failed to connect to WebSocket server! Exception: ", e);
         }
 
         return noerror;
@@ -98,7 +98,7 @@ namespace HRtoVRChat_OSC
                 }
                 catch (Exception e)
                 {
-                    LogHelper.Error("Failed to close connection to HypeRate Server! Exception: ", e);
+                    LogHelper.Error("Failed to close connection to WebSocket Server!", e);
                     return false;
                 }
             else

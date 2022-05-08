@@ -214,7 +214,7 @@ namespace HRtoVRChat_OSC
             }
         }
 
-        private static void RestartHRListener()
+        public static void RestartHRListener()
         {
             int loops = 0;
             if (!isRestarting)

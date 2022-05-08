@@ -62,7 +62,7 @@ namespace HRtoVRChat_OSC.HRManagers
                 }
                 catch(Exception e)
                 {
-                    LogHelper.Error("Failed to connect to HypeRate server! Exception: ", e);
+                    LogHelper.Error("Failed to connect to HypeRate server!", e);
                     noerror = false;
                 }
                 if (noerror)
@@ -77,8 +77,10 @@ namespace HRtoVRChat_OSC.HRManagers
                                 HandleMessage(message);
                         }
                         else
-                            if (!await wst.Start())
-                                Stop();
+                        {
+                            // Stop and Restart
+                            Program.RestartHRListener();
+                        }
                         Thread.Sleep(1);
                     }
                 }

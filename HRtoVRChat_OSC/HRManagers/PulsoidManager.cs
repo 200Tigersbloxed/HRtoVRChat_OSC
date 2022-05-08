@@ -77,8 +77,10 @@ namespace HRtoVRChat_OSC.HRManagers
                                 HandleMessage(message);
                         }
                         else
-                            if (!await wst.Start())
-                                Stop();
+                        {
+                            // Restart
+                            Program.RestartHRListener();
+                        }
                         Thread.Sleep(1);
                     }
                 }
