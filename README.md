@@ -60,6 +60,7 @@ Below is a table of all the config values and a description. Please update the c
 | `fitbiturl`         | `(string)` `String.Empty` | (FitbitHRtoWS Only) The WebSocket URL to connect to.                                    |
 | `hyperatesessionid` | `(string)` `String.Empty` | (HypeRate Only) The HypeRate SessionId to subscribe to.                                 |
 | `pulsoidwidget`     | `(string)` `String.Empty` | (Pulsoid Only) The Widget's URL to GET from an API.                                     |
+| `stromnowidget`     | `(string)` `String.Empty` | (Stromno Only) The Widget's URL to GET from an API.                                     |
 | `pulsoidkey`        | `(string)` `String.Empty` | (PulsoidSocket Only) API Key for Pulsoid's Sockets.                                     |
 | `textfilelocation`  | `(string)` `String.Empty` | (TextFile Only) Location of the text file where HR data should be read from             |
 | `MaxHR`             | `(double)` 150            | Maximum range for the `HRPercent (float)` parameter                                     |
