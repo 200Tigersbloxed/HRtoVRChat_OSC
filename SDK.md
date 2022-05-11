@@ -204,6 +204,10 @@ Entire documentation of `HRSDK`'s methods.
 
 A virtual method (one that can be overridden) that will be invoked when the SDK connects to the server.
 
+### virtual OnSDKData(Messages.HRMessage message)
+
+A virtual method that'll callback whenever an HRMessage is received. Currently only called when RequestHRData is invoked.
+
 ### virtual OnSDKClosed()
 
 A virtual method (one that can be overridden) that will be invoked when the SDK disconnects from the server.
@@ -211,6 +215,10 @@ A virtual method (one that can be overridden) that will be invoked when the SDK 
 ### void Update()
 
 Invoke when you wish to update the HeartRate data. Will send whatever the `HR`, `IsOpen`, and `IsActive` abstract properties are.
+
+### void RequestHRData()
+
+Send a request for the latest HR data on the client. Will callback to the OnSDKData override.
 
 ### void Open()
 
