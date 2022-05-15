@@ -139,6 +139,7 @@ Material:
     - _DstBlend: 0
     - _EmissionAudioLinkChannel: 0
     - _EmissionToDiffuse: 0
+    - _EnableEmission: 0
     - _FadeDither: 0
     - _FadeDitherDistance: 0
     - _GlossMapScale: 1
@@ -236,7 +237,7 @@ Material:
     - _ClipSlider13: {r: 0, g: 0, b: 0, a: 0}
     - _ClipSlider14: {r: 0, g: 0, b: 0, a: 0}
     - _ClipSlider15: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 1, g: 0.3443396, b: 0.48728886, a: 1}
+    - _Color: {r: 1, g: 0.3443396, b: 0.4872888, a: 1}
     - _DissolveColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _EmissionColor0: {r: 0, g: 0, b: 0, a: 0}

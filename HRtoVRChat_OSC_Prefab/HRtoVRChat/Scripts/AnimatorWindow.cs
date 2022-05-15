@@ -346,65 +346,129 @@ namespace HRtoVRChat.Scripts
             Debug.Log("Creating Animations...");
             Dictionary<string, AnimationClip> generatedAnimations = new Dictionary<string, AnimationClip>();
             // Create the Animation Clips
-            if (useSmallerHR)
+            if (HRObject.Backend == HRObjectBackend.Universal)
+            {
+                if (useSmallerHR)
+                {
+                    for (int x = 0; x < 256; x++)
+                    {
+                        AnimationClip clip = new AnimationClip();
+                        clip.frameRate = 1f;
+                        for (int e = 0; e < 3; e++)
+                        {
+                            NumberSpots ns = 0;
+                            Transform currentNumberTransform = null;
+                            switch (e)
+                            {
+                                case 0:
+                                    ns = NumberSpots.Ones;
+                                    currentNumberTransform = HRObject.OnesIcon.transform;
+                                    break;
+                                case 1:
+                                    ns = NumberSpots.Tens;
+                                    currentNumberTransform = HRObject.TensIcon.transform;
+                                    break;
+                                case 2:
+                                    ns = NumberSpots.Hundreds;
+                                    currentNumberTransform = HRObject.HundredsIcon.transform;
+                                    break;
+                            }
+
+                            string path = AnimationUtility.CalculateTransformPath(currentNumberTransform, Avatar.transform);
+                            EditorCurveBinding binding =
+                                EditorCurveBinding.PPtrCurve(path, typeof(MeshRenderer), "m_Materials.Array.data[0]");
+                            ObjectReferenceKeyframe[] keyFrames = new ObjectReferenceKeyframe[2];
+                            HRMaterialCache hrmc = HRObject.HRMaterialCacheFromLoop(ns);
+                            // why does this work?
+                            int fixedE = 1;
+                            switch (e)
+                            {
+                                case 0:
+                                    fixedE = 2;
+                                    break;
+                                case 2:
+                                    fixedE = 0;
+                                    break;
+                            }
+
+                            int materialIndex = BetterX(x).ToCharArray()[fixedE] - '0';
+                            Material targetMaterial = hrmc.GetNumberMaterialFromLoop(materialIndex);
+                            if (targetMaterial == null)
+                                throw new Exception();
+                            // First Keyframe
+                            keyFrames[0] = default;
+                            keyFrames[0].time = 0f;
+                            keyFrames[0].value = targetMaterial;
+                            // Second Keyframe
+                            keyFrames[1] = default;
+                            keyFrames[1].time = 0.01f;
+                            keyFrames[1].value = targetMaterial;
+                            // Finalize
+                            AnimationUtility.SetObjectReferenceCurve(clip, binding, keyFrames);
+                        }
+
+                        string id = x.ToString();
+                        clip.name = id;
+                        string pa = "HRtoVRChat/output/" + friendlyName;
+                        if (!Directory.Exists("Assets/" + pa))
+                            Directory.CreateDirectory("Assets/" + pa);
+                        AssetDatabase.CreateAsset(clip, "Assets/" + pa + "/" + id + ".anim");
+                        generatedAnimations.Add(id, clip);
+                    }
+                }
+                else
+                {
+                    for (int x = 0; x < 3; x++)
+                    {
+                        Transform currentNumberTransform = HRObjectFromLoop(HRObject, x);
+                        string path = AnimationUtility.CalculateTransformPath(currentNumberTransform, Avatar.transform);
+                        for (int y = 0; y < 10; y++)
+                        {
+                            AnimationClip clip = new AnimationClip();
+                            clip.frameRate = 1f;
+                            EditorCurveBinding binding =
+                                EditorCurveBinding.PPtrCurve(path, typeof(MeshRenderer), "m_Materials.Array.data[0]");
+                            // Keyframes
+                            ObjectReferenceKeyframe[] keyFrames = new ObjectReferenceKeyframe[2];
+                            Material targetMaterial = HRObject.HRMaterialCacheFromLoop(GetNumbersSpot(x))
+                                .GetNumberMaterialFromLoop(y);
+                            // First Keyframe
+                            keyFrames[0] = default;
+                            keyFrames[0].time = 0f;
+                            keyFrames[0].value = targetMaterial;
+                            // Second Keyframe
+                            keyFrames[1] = default;
+                            keyFrames[1].time = 0.01f;
+                            keyFrames[1].value = targetMaterial;
+                            // Finalize and Save
+                            AnimationUtility.SetObjectReferenceCurve(clip, binding, keyFrames);
+                            string id = LoopToIdentifier(x, y);
+                            clip.name = id;
+                            string pa = "HRtoVRChat/output/" + friendlyName;
+                            if (!Directory.Exists("Assets/" + pa))
+                                Directory.CreateDirectory("Assets/" + pa);
+                            AssetDatabase.CreateAsset(clip, "Assets/" + pa + "/" + id + ".anim");
+                            generatedAnimations.Add(id, clip);
+                        }
+                    }
+                }
+            }
+            else if (HRObject.Backend == HRObjectBackend.Shaders)
             {
                 for (int x = 0; x < 256; x++)
                 {
                     AnimationClip clip = new AnimationClip();
                     clip.frameRate = 1f;
-                    for (int e = 0; e < 3; e++)
-                    {
-                        NumberSpots ns = 0;
-                        Transform currentNumberTransform = null;
-                        switch (e)
-                        {
-                            case 0:
-                                ns = NumberSpots.Ones;
-                                currentNumberTransform = HRObject.OnesIcon.transform;
-                                break;
-                            case 1:
-                                ns = NumberSpots.Tens;
-                                currentNumberTransform = HRObject.TensIcon.transform;
-                                break;
-                            case 2:
-                                ns = NumberSpots.Hundreds;
-                                currentNumberTransform = HRObject.HundredsIcon.transform;
-                                break;
-                        }
-
-                        string path = AnimationUtility.CalculateTransformPath(currentNumberTransform, Avatar.transform);
-                        EditorCurveBinding binding =
-                            EditorCurveBinding.PPtrCurve(path, typeof(MeshRenderer), "m_Materials.Array.data[0]");
-                        ObjectReferenceKeyframe[] keyFrames = new ObjectReferenceKeyframe[2];
-                        HRMaterialCache hrmc = HRObject.HRMaterialCacheFromLoop(ns);
-                        // why does this work?
-                        int fixedE = 1;
-                        switch (e)
-                        {
-                            case 0:
-                                fixedE = 2;
-                                break;
-                            case 2:
-                                fixedE = 0;
-                                break;
-                        }
-
-                        int materialIndex = BetterX(x).ToCharArray()[fixedE] - '0';
-                        Material targetMaterial = hrmc.GetNumberMaterialFromLoop(materialIndex);
-                        if (targetMaterial == null)
-                            throw new Exception();
-                        // First Keyframe
-                        keyFrames[0] = default;
-                        keyFrames[0].time = 0f;
-                        keyFrames[0].value = targetMaterial;
-                        // Second Keyframe
-                        keyFrames[1] = default;
-                        keyFrames[1].time = 0.01f;
-                        keyFrames[1].value = targetMaterial;
-                        // Finalize
-                        AnimationUtility.SetObjectReferenceCurve(clip, binding, keyFrames);
-                    }
-
+                    string path = AnimationUtility.CalculateTransformPath(HRObject.NumsIcon.transform, Avatar.transform);
+                    EditorCurveBinding binding =
+                        EditorCurveBinding.PPtrCurve(path, typeof(MeshRenderer), "material._Value");
+                    AnimationCurve ac = new AnimationCurve();
+                    // First Keyframe
+                    ac.AddKey(0f, x);
+                    // Second Keyframe
+                    ac.AddKey(0.01f, x);
+                    // Finalize
+                    AnimationUtility.SetEditorCurve(clip, binding, ac);
                     string id = x.ToString();
                     clip.name = id;
                     string pa = "HRtoVRChat/output/" + friendlyName;
@@ -414,48 +478,12 @@ namespace HRtoVRChat.Scripts
                     generatedAnimations.Add(id, clip);
                 }
             }
-            else
-            {
-                for (int x = 0; x < 3; x++)
-                {
-                    Transform currentNumberTransform = HRObjectFromLoop(HRObject, x);
-                    string path = AnimationUtility.CalculateTransformPath(currentNumberTransform, Avatar.transform);
-                    for (int y = 0; y < 10; y++)
-                    {
-                        AnimationClip clip = new AnimationClip();
-                        clip.frameRate = 1f;
-                        EditorCurveBinding binding =
-                            EditorCurveBinding.PPtrCurve(path, typeof(MeshRenderer), "m_Materials.Array.data[0]");
-                        // Keyframes
-                        ObjectReferenceKeyframe[] keyFrames = new ObjectReferenceKeyframe[2];
-                        Material targetMaterial = HRObject.HRMaterialCacheFromLoop(GetNumbersSpot(x))
-                            .GetNumberMaterialFromLoop(y);
-                        // First Keyframe
-                        keyFrames[0] = default;
-                        keyFrames[0].time = 0f;
-                        keyFrames[0].value = targetMaterial;
-                        // Second Keyframe
-                        keyFrames[1] = default;
-                        keyFrames[1].time = 0.01f;
-                        keyFrames[1].value = targetMaterial;
-                        // Finalize and Save
-                        AnimationUtility.SetObjectReferenceCurve(clip, binding, keyFrames);
-                        string id = LoopToIdentifier(x, y);
-                        clip.name = id;
-                        string pa = "HRtoVRChat/output/" + friendlyName;
-                        if (!Directory.Exists("Assets/" + pa))
-                            Directory.CreateDirectory("Assets/" + pa);
-                        AssetDatabase.CreateAsset(clip, "Assets/" + pa + "/" + id + ".anim");
-                        generatedAnimations.Add(id, clip);
-                    }
-                }
-            }
 
             AssetDatabase.SaveAssets();
             Debug.Log("Created Animations!");
             // Edit the Animator Controller
             Debug.Log("Applying to AnimatorController...");
-            if (useSmallerHR)
+            if (useSmallerHR || HRObject.Backend == HRObjectBackend.Shaders)
             {
                 // Only one HR Parameter
                 Debug.Log("-- Adding Parameter(s)");
@@ -670,6 +698,37 @@ namespace HRtoVRChat.Scripts
             _instance = GetWindow<AnimatorWindow>();
             _instance.titleContent = new GUIContent("HRtoVRChat Editor SDK");
         }
+        
+        private void CreateBuildButton()
+        {
+            if (GUILayout.Button("Create Animations!"))
+            {
+                if (SelectedHRTarget.AvatarRoot != null && SelectedHRTarget.FXController != null)
+                {
+                    try
+                    {
+                        AnimatorCreator.BeginProcess(SelectedHRTarget.AvatarRoot.gameObject, SelectedHRTarget,
+                            SelectedHRTarget.FXController, useSmallerHR: useSmallerHR,
+                            deleteComponentOnDone: deleteComponentOnDone, overwriteLayers: overwriteLayers,
+                            friendlyName: friendlyName, writeDefaults: writeDefaults,
+                            writeToParameters: writeToParameters);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError(e);
+                        EditorUtility.DisplayDialog("HRtoVRChat_SDK",
+                            "Failed to complete operation! See the Console for more information", "OK");
+                    }
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog("HRtoVRChat_SDK",
+                        "SelectedHRTarget cannot be null!\n" +
+                        "If it is not null, then please make sure that you have set an Avatar " +
+                        "and an FX Layer on the component", "OK");
+                }
+            }
+        }
 
         private void Draw()
         {
@@ -702,48 +761,21 @@ namespace HRtoVRChat.Scripts
             {
                 GUILayout.Label("SelectedHRTarget: " + SelectedHRTarget.gameObject.name);
                 NewGUILine();
-                if (GUILayout.Button("Create Animations!"))
+                switch (EditorUserBuildSettings.activeBuildTarget)
                 {
-                    if (SelectedHRTarget.AvatarRoot != null && SelectedHRTarget.FXController != null)
-                    {
-                        try
-                        {
-                            AnimatorCreator.BeginProcess(SelectedHRTarget.AvatarRoot.gameObject, SelectedHRTarget,
-                                SelectedHRTarget.FXController, useSmallerHR: useSmallerHR,
-                                deleteComponentOnDone: deleteComponentOnDone, overwriteLayers: overwriteLayers,
-                                friendlyName: friendlyName, writeDefaults: writeDefaults,
-                                writeToParameters: writeToParameters);
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.LogError(e);
-                            EditorUtility.DisplayDialog("HRtoVRChat_SDK",
-                                "Failed to complete operation! See the Console for more information", "OK");
-                        }
-                    }
-                    else
-                    {
-                        EditorUtility.DisplayDialog("HRtoVRChat_SDK",
-                            "SelectedHRTarget cannot be null!\n" +
-                            "If it is not null, then please make sure that you have set an Avatar " +
-                            "and an FX Layer on the component", "OK");
-                    }
-                }
-
-                if (GUILayout.Button("Convert Materials To Quest"))
-                {
-                    SelectedHRTarget.OnesMaterials.SetMaterialsToQuest();
-                    SelectedHRTarget.TensMaterials.SetMaterialsToQuest();
-                    SelectedHRTarget.HundredsMaterials.SetMaterialsToQuest();
-                    SelectedHRTarget.SetMaterialToQuest();
-                }
-                
-                if (GUILayout.Button("Convert Materials To Standard"))
-                {
-                    SelectedHRTarget.OnesMaterials.SetMaterialsToStandard();
-                    SelectedHRTarget.TensMaterials.SetMaterialsToStandard();
-                    SelectedHRTarget.HundredsMaterials.SetMaterialsToStandard();
-                    SelectedHRTarget.SetMaterialToStandard();
+                    case BuildTarget.Android:
+                        if (SelectedHRTarget.Backend == HRObjectBackend.Universal)
+                            CreateBuildButton();
+                        else
+                            EditorGUILayout.HelpBox("Universal Backend required for building on Quest!",
+                                MessageType.Error);
+                        break;
+                     case BuildTarget.StandaloneWindows:
+                         CreateBuildButton();
+                         break;
+                     case BuildTarget.StandaloneWindows64:
+                         CreateBuildButton();
+                         break;
                 }
                 NewGUILine();
             }
@@ -754,7 +786,18 @@ namespace HRtoVRChat.Scripts
             GUILayout.Label("Sets a name for the HRObject when creating");
             GUILayout.Label("This should be changed for every creation in the same Unity Project", EditorStyles.miniLabel);
             NewGUILine();
-            useSmallerHR = GUILayout.Toggle(useSmallerHR, "Use one HR parameter");
+            if (SelectedHRTarget != null)
+            {
+                using (new EditorGUI.DisabledScope(SelectedHRTarget.Backend == HRObjectBackend.Shaders))
+                    useSmallerHR = GUILayout.Toggle(useSmallerHR, "Use one HR parameter");
+                if (SelectedHRTarget.Backend == HRObjectBackend.Shaders)
+                {
+                    EditorGUILayout.HelpBox("useSmallerHR is required for a Shader Backend", MessageType.Info);
+                    useSmallerHR = true;
+                }
+            }
+            else
+                GUILayout.Label("Please select an HR target to edit the setting: useSmallerHR");
             GUILayout.Label("Uses only one HR parameter instead of the conventional three parameters");
             NewGUILine();
             writeToParameters = GUILayout.Toggle(writeToParameters, "Write to Expression Parameters");

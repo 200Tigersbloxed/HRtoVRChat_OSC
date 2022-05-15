@@ -137,6 +137,7 @@ Material:
     - _DstBlend: 0
     - _EmissionAudioLinkChannel: 0
     - _EmissionToDiffuse: 0
+    - _EnableEmission: 0
     - _FadeDither: 0
     - _FadeDitherDistance: 0
     - _GlossMapScale: 1
