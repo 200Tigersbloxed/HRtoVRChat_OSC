@@ -21,7 +21,20 @@ namespace HRtoVRChat_OSC_UI
         private string localVersion;
         private bool gotCloudVersion;
 
-        public bool IsOSCRunning => Process.GetProcessesByName("HRtoVRChat_OSC").Length > 0;
+        public bool autoStartChecked = false;
+        public bool skipvrccheckChecked = false;
+
+        public bool IsOSCRunning
+        {
+            get
+            {
+                int processesLength = Process.GetProcessesByName("HRtoVRChat_OSC").Length;
+                bool result = processesLength > 0;
+                SystemTrayManager.UpdateProcessesCount(processesLength);
+                SystemTrayManager.UpdateStatusMI(result);
+                return result;
+            }
+        }
 
         private string lastLineColor = "White";
         
@@ -51,17 +64,7 @@ namespace HRtoVRChat_OSC_UI
                 MessageBox.Show("Finished Downloading Software!", "HRtoVRChat_OSC_UI", MessageBoxButtons.OK,
                     MessageBoxIcon.Information));
             startButton.Click += (sender, args) => StartProgram();
-            stopButton.Click += (sender, args) =>
-            {
-                try
-                {
-                    myStreamWriter?.WriteLine("exit");
-                    UpdateConsoleOutput.Invoke("> exit", "Purple");
-                    myStreamWriter?.Close();
-                    CurrentProcess?.Kill();
-                }
-                catch(Exception){}
-            };
+            stopButton.Click += (sender, args) => StopProgram();
             sendCommand.Click += (sender, args) =>
             {
                 if (IsOSCRunning)
@@ -127,6 +130,9 @@ namespace HRtoVRChat_OSC_UI
             };
             UpdateVersionLabels(true);
             ConfigManager.CreateConfig();
+            SystemTrayManager.Init(this);
+            UpdateCheckboxLinks(ref autoStartChecked, ConfigManager.LoadedUIConfig.AutoStart);
+            UpdateCheckboxLinks(ref skipvrccheckChecked, ConfigManager.LoadedUIConfig.SkipVRCCheck);
             SetupConfigRadios();
             updateConfigValueButton.Click += (sender, args) => UpdateConfigButtonPressed();
             killAllProcesses.Click += (sender, args) =>
@@ -324,6 +330,30 @@ namespace HRtoVRChat_OSC_UI
                 materialCheckbox2.Checked = false;
                 checkbox.Checked = true;
             }
+
+            autoStartChecked = materialCheckbox1.Checked;
+            skipvrccheckChecked = materialCheckbox2.Checked;
+            SystemTrayManager.UpdateLaunchOptions((autoStartChecked, skipvrccheckChecked));
+            // Update UI Config
+            ConfigManager.LoadedUIConfig.AutoStart = autoStartChecked;
+            ConfigManager.LoadedUIConfig.SkipVRCCheck = skipvrccheckChecked;
+            ConfigManager.SaveConfig(ConfigManager.LoadedUIConfig);
+        }
+
+        public void UpdateCheckboxLinks(ref bool propertyChanged, bool value)
+        {
+            if (autoStartChecked && skipvrccheckChecked)
+            {
+                autoStartChecked = false;
+                skipvrccheckChecked = false;
+                propertyChanged = value;
+            }
+            else
+                propertyChanged = value;
+
+            materialCheckbox1.Checked = autoStartChecked;
+            materialCheckbox2.Checked = skipvrccheckChecked;
+            SystemTrayManager.UpdateLaunchOptions((autoStartChecked, skipvrccheckChecked));
         }
 
         public Process CurrentProcess;
@@ -363,6 +393,18 @@ namespace HRtoVRChat_OSC_UI
                     CurrentProcess = exec;
                 }
             }
+        }
+
+        public void StopProgram()
+        {
+            try
+            {
+                myStreamWriter?.WriteLine("exit");
+                UpdateConsoleOutput.Invoke("> exit", "Purple");
+                myStreamWriter?.Close();
+                CurrentProcess?.Kill();
+            }
+            catch(Exception){}
         }
     }
 }

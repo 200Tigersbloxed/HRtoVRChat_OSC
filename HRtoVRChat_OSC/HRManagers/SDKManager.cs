@@ -1,4 +1,5 @@
-﻿using HRtoVRChat_OSC_SDK;
+﻿using System.Reflection;
+using HRtoVRChat_OSC_SDK;
 using SuperSimpleTcp;
 
 namespace HRtoVRChat_OSC.HRManagers;
@@ -9,6 +10,10 @@ public class SDKManager : HRManager
     private CancellationTokenSource token;
 
     private SimpleTcpServer server;
+
+    private readonly string SDKsLocation =
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "HRtoVRChat_OSC/SDKs");
+    private readonly List<ExternalHRSDK> ExternalHrsdks = new();
 
     private int HR;
     private bool isActive;
@@ -55,9 +60,52 @@ public class SDKManager : HRManager
                 }
             };
             server.Start();
+            LogHelper.Debug("Started SDK Server at " + d1);
+            if (!Directory.Exists(SDKsLocation))
+                Directory.CreateDirectory(SDKsLocation);
+            foreach (string file in Directory.GetFiles(SDKsLocation, "*.dll"))
+            {
+                // Attempt to load the file
+                try
+                {
+                    Assembly assembly = Assembly.LoadFile(file);
+                    List<Type> externalHrsdks =
+                        assembly.GetTypes().Where(x => x.IsSubclassOf(typeof(ExternalHRSDK))).ToList();
+                    foreach (Type externalHrsdk in externalHrsdks)
+                    {
+                        try
+                        {
+                            ExternalHRSDK loaded = (ExternalHRSDK) Activator.CreateInstance(externalHrsdk);
+                            if (loaded != null)
+                            {
+                                LogHelper.Debug("Loaded ExternalHRSDK " + loaded.SDKName);
+                                if(loaded.Initialize() || loaded.OverrideInitializeAdd)
+                                    ExternalHrsdks.Add(loaded);
+                            }
+                            else
+                                LogHelper.Error("Failed to create an ExternalHRSDK under the file " + file);
+                        }
+                        catch (Exception e)
+                        {
+                            LogHelper.Error("Unknown Error while loading an ExternalHRSDK from file" + file, e);
+                        }
+                    }
+                }
+                catch (Exception ee)
+                {
+                    LogHelper.Error("Unknown Exception while processing an ExternalHRSDK from file " + file, ee);
+                }
+            }
+            LogHelper.Debug("Finished loading all External SDKs");
             while (!token.IsCancellationRequested)
             {
                 int c = server.GetClients().ToList().Count;
+                foreach (ExternalHRSDK externalHrsdk in ExternalHrsdks)
+                {
+                    if (externalHrsdk.IsActive)
+                        c++;
+                    externalHrsdk.Update();
+                }
                 if (c <= 0)
                 {
                     // reset all data
@@ -68,6 +116,8 @@ public class SDKManager : HRManager
                 Thread.Sleep(10);
             }
             server?.Stop();
+            foreach (ExternalHRSDK externalHrsdk in ExternalHrsdks)
+                externalHrsdk.Destroy();
         });
         _worker.Start();
         return true;

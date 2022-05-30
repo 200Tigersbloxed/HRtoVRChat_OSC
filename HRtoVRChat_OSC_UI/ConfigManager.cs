@@ -7,7 +7,9 @@ namespace HRtoVRChat_OSC_UI
     public class ConfigManager
     {
         public static Config LoadedConfig { get; private set; }
+        public static UIConfig LoadedUIConfig { get; private set; }
         public static readonly string ConfigLocation = Path.Combine(GithubTools.outputPath, "config.cfg");
+        public static readonly string UIConfigLocation = Path.Combine(GithubTools.outputPath, "uiconfig.cfg");
         
         public static void CreateConfig()
         {
@@ -18,9 +20,20 @@ namespace HRtoVRChat_OSC_UI
                 //SaveConfig(nc);
                 LoadedConfig = nc;
             }
+
+            if (File.Exists(UIConfigLocation))
+            {
+                // Load
+                UIConfig nuic = TommySerializer.FromTomlFile<UIConfig>(UIConfigLocation) ?? new UIConfig();
+                //SaveConfig(nc);
+                LoadedUIConfig = nuic;
+            }
+            else
+                LoadedUIConfig = new UIConfig();
         }
 
         public static void SaveConfig(Config config) => TommySerializer.ToTomlFile(config, ConfigLocation);
+        public static void SaveConfig(UIConfig uiConfig) => TommySerializer.ToTomlFile(uiConfig, UIConfigLocation);
     }
     
     [TommyTableName("HRtoVRChat_OSC")]
@@ -59,5 +72,16 @@ namespace HRtoVRChat_OSC_UI
         [TommyComment("The minimum HR for HRPercent")]
         [TommyInclude]
         public double MinHR = 0;
+    }
+
+    [TommyTableName("HRtoVRChat_OSC_UI")]
+    public class UIConfig
+    {
+        [TommyComment("Automatically Start HRtoVRChat_OSC when VRChat is detected")]
+        [TommyInclude]
+        public bool AutoStart { get; set; }
+        [TommyComment("Force HRtoVRChat_OSC to run whether or not VRChat is detected")]
+        [TommyInclude]
+        public bool SkipVRCCheck { get; set; }
     }
 }

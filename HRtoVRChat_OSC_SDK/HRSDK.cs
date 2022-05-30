@@ -5,6 +5,10 @@ namespace HRtoVRChat_OSC_SDK;
 public abstract class HRSDK
 {
     private SimpleTcpClient? client;
+    
+    /// <summary>
+    /// Whether or not the client is connected to the server
+    /// </summary>
     public bool isClientConnected => client?.IsConnected ?? false;
     
     public HRSDK(bool autoOpen = true, string ipPort = "127.0.0.1:9000")
@@ -33,14 +37,41 @@ public abstract class HRSDK
             Open();
     }
     
+    /// <summary>
+    /// The current HeartRate
+    /// </summary>
     public abstract int HR { get; set; }
+    
+    /// <summary>
+    /// If the device transmitting data to the source is connected.
+    /// If your service does not support this, then you can point it to IsOpen
+    /// </summary>
     public abstract bool IsOpen { get; set; }
+    
+    /// <summary>
+    /// If there's an active connection to the source
+    /// </summary>
     public abstract bool IsActive { get; set; }
 
+    /// <summary>
+    /// Callback for when the client opens a connection with the server
+    /// </summary>
     public virtual void OnSDKOpened(){}
+    
+    /// <summary>
+    /// Callback for when the client gets a message from the server
+    /// </summary>
+    /// <param name="message"></param>
     public virtual void OnSDKData(Messages.HRMessage message){}
+    
+    /// <summary>
+    /// Callback for when the client's connection to the server is closed
+    /// </summary>
     public virtual void OnSDKClosed(){}
 
+    /// <summary>
+    /// Updates the current HeartRate data to the server
+    /// </summary>
     public void Update()
     {
         if (isClientConnected)
@@ -56,6 +87,10 @@ public abstract class HRSDK
         }
     }
 
+    /// <summary>
+    /// Requests the current HeartRate data that the server has.
+    /// This is called back in the OnSDKData virtual void.
+    /// </summary>
     public void RequestHRData()
     {
         if (isClientConnected)
@@ -66,6 +101,13 @@ public abstract class HRSDK
         }
     }
 
+    /// <summary>
+    /// Open a connection to the server
+    /// </summary>
     public void Open() => client?.Connect();
+    
+    /// <summary>
+    /// Close the connection to the server
+    /// </summary>
     public void Close() => client?.Disconnect();
 }

@@ -15,7 +15,7 @@ namespace HRtoVRChat_OSC_UI
 
         public static readonly string latestDownload =
             "https://github.com/200Tigersbloxed/HRtoVRChat_OSC/releases/latest/download/HRtoVRChat_OSC.zip";
-
+        
         public static readonly string outputPath = "HRtoVRChat_OSC";
         
         public static string Executable => Path.Combine(outputPath, "HRtoVRChat_OSC.exe");
