@@ -67,7 +67,7 @@ namespace HRtoVRChat_OSC.HRManagers
                 }
                 if (noerror)
                 {
-                    await wst.SendMessage("{\"reader\": \"hyperate\", \"identifier\": \"" + id + "\", \"service\": \"vrchat\"}");
+                    await wst.SendMessage("{\"reader\": \"pulsoid\", \"identifier\": \"" + id + "\", \"service\": \"vrchat\"}");
                     while (!tokenSource.IsCancellationRequested)
                     {
                         if (IsConnected)
