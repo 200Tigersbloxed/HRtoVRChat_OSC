@@ -48,6 +48,16 @@ Please also consider contributing to add more support with other Heart Rate Moni
 
 Take note of HRType, as you'll need to know which you you have to put in the `hrtype` config value.
 
+### Extensions
+
+Device support can be extended with our [SDK](https://github.com/200Tigersbloxed/HRtoVRChat_OSC/blob/main/SDK.md). If you don't want to add support natively, for whatever reason that may be (such as complicated setup), then data can be passed through with our SDK. Feel free to create a PR if you've made an SDK you'd like to showoff.
+
+| SDK             | Developer                                         | URL                                                          |
+|-----------------|---------------------------------------------------|--------------------------------------------------------------|
+| FitbitWebOSC    | [ButterScotchV](https://github.com/ButterscotchV) | https://github.com/ButterscotchV/FitbitWebOSC                |
+
+**Note**: Extensions are not maintained by HRtoVRChat_OSC, they are maintained by its repositories' respective contributor(s). Please direct any issues with their software/SDK there, not here.
+
 ### Values
 
 Below is a table of all the config values and a description. Please update the config accordingly.
