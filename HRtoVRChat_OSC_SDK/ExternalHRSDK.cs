@@ -33,7 +33,7 @@ public abstract class ExternalHRSDK
     /// Register the SDK regardless of if Initialize() returns false.
     /// Note that this will not override the inactivity check on IsActive
     /// </summary>
-    public bool OverrideInitializeAdd { get; } = false;
+    public bool OverrideInitializeAdd { get; set; } = false;
 
     /// <summary>
     /// Check whether or not the SDK should be used

@@ -80,7 +80,7 @@ public class SDKManager : HRManager
                             {
                                 if (loaded.Initialize() || loaded.OverrideInitializeAdd)
                                 {
-                                    LogHelper.Debug("Loaded ExternalHRSDK " + loaded.SDKName);
+                                    LogHelper.Log("Loaded ExternalHRSDK " + loaded.SDKName);
                                     ExternalHrsdks.Add(loaded);
                                     loaded.OnHRMessageUpdated += message =>
                                     {
@@ -92,6 +92,8 @@ public class SDKManager : HRManager
                                         }
                                     };
                                 }
+                                else
+                                    LogHelper.Error(loaded.SDKName + " failed to initialize!");
                             }
                             else
                                 LogHelper.Error("Failed to create an ExternalHRSDK under the file " + file);
