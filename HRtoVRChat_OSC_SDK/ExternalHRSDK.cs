@@ -1,4 +1,6 @@
-﻿namespace HRtoVRChat_OSC_SDK;
+﻿#nullable enable
+
+namespace HRtoVRChat_OSC_SDK;
 
 public abstract class ExternalHRSDK
 {
@@ -6,33 +8,37 @@ public abstract class ExternalHRSDK
     /// The name of your SDK
     /// </summary>
     public abstract string SDKName { get; set; }
+
+    /// <summary>
+    /// What the SDK will listen for when to update it's data. Please don't set this at runtime.
+    /// </summary>
+    public Action<Messages.HRMessage> OnHRMessageUpdated = message => { };
+    
+    private Messages.HRMessage _currentHRData = new();
     
     /// <summary>
-    /// The current HeartRate
+    /// The current HR data
     /// </summary>
-    public abstract int HR { get; set; }
-    
-    /// <summary>
-    /// If the device transmitting data to the source is connected.
-    /// If your service does not support this, then you can point it to IsOpen
-    /// </summary>
-    public abstract bool IsOpen { get; set; }
-    
-    /// <summary>
-    /// If there's an active connection to the source
-    /// </summary>
-    public abstract bool IsActive { get; set; }
+    public Messages.HRMessage CurrentHRData
+    {
+        get => _currentHRData;
+        set
+        {
+            _currentHRData = value;
+            OnHRMessageUpdated.Invoke(value);
+        }
+    }
 
     /// <summary>
     /// Register the SDK regardless of if Initialize() returns false.
     /// Note that this will not override the inactivity check on IsActive
     /// </summary>
-    public bool OverrideInitializeAdd { get; set; } = false;
+    public bool OverrideInitializeAdd { get; } = false;
 
     /// <summary>
     /// Check whether or not the SDK should be used
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The status of whether or not the SDK should be used</returns>
     public abstract bool Initialize();
     
     /// <summary>

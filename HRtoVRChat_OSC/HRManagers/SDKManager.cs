@@ -78,9 +78,20 @@ public class SDKManager : HRManager
                             ExternalHRSDK loaded = (ExternalHRSDK) Activator.CreateInstance(externalHrsdk);
                             if (loaded != null)
                             {
-                                LogHelper.Debug("Loaded ExternalHRSDK " + loaded.SDKName);
-                                if(loaded.Initialize() || loaded.OverrideInitializeAdd)
+                                if (loaded.Initialize() || loaded.OverrideInitializeAdd)
+                                {
+                                    LogHelper.Debug("Loaded ExternalHRSDK " + loaded.SDKName);
                                     ExternalHrsdks.Add(loaded);
+                                    loaded.OnHRMessageUpdated += message =>
+                                    {
+                                        if (message.IsActive)
+                                        {
+                                            HR = message.HR;
+                                            isActive = message.IsActive;
+                                            isOpen = message.IsOpen;
+                                        }
+                                    };
+                                }
                             }
                             else
                                 LogHelper.Error("Failed to create an ExternalHRSDK under the file " + file);
@@ -102,9 +113,11 @@ public class SDKManager : HRManager
                 int c = server.GetClients().ToList().Count;
                 foreach (ExternalHRSDK externalHrsdk in ExternalHrsdks)
                 {
-                    if (externalHrsdk.IsActive)
-                        c++;
+                    // Update first
                     externalHrsdk.Update();
+                    // THEN do checks
+                    if (externalHrsdk.CurrentHRData.IsActive)
+                        c++;
                 }
                 if (c <= 0)
                 {

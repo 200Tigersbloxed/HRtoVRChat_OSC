@@ -44,7 +44,7 @@ public abstract class HRSDK
     
     /// <summary>
     /// If the device transmitting data to the source is connected.
-    /// If your service does not support this, then you can point it to IsOpen
+    /// If your service does not support this, then you can point it to IsActive
     /// </summary>
     public abstract bool IsOpen { get; set; }
     
