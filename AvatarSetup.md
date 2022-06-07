@@ -35,8 +35,8 @@ The Expression Parameters supported with a description
 | onesHR         | `int`          | 0                 | false           | Ones spot in the Heart Rate reading; 12**3** *(legacy)*                               |
 | tensHR         | `int`          | 0                 | false           | Tens spot in the Heart Rate reading; 1**2**3 *(legacy)*                               |
 | hundredsHR     | `int`          | 0                 | false           | Hundreds spot in the Heart Rate reading; **1**23 *(legacy)*                           |
-| isHRConnected  | `bool`         | false             | false           | Returns whether the connection is valid or not                                        |
-| isHRActive     | `bool`         | false             | false           | Returns whether the device's connection is valid or not                               |
+| isHRConnected  | `bool`         | false             | false           | Returns whether the device's connection is valid or not                               |
+| isHRActive     | `bool`         | false             | false           | Returns whether the connection is valid or not                                        |
 | isHRBeat       | `bool`         | false             | false           | Estimation on when the heart is beating                                               |
 | HRPercent      | `float`        | false             | false           | Range of HR between the MinHR and MaxHR config value                                  |
 | HR             | `int`          | 0                 | false           | Returns the raw HR, ranged from 0 - 255. *(required)*                                 |
