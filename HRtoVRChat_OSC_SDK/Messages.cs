@@ -42,12 +42,15 @@ public class Messages
         public readonly string MessageType = "HRMessage";
         
         [ProtoMember(2)]
-        public int HR { get; set; }
+        public string SDKName { get; set; }
         
         [ProtoMember(3)]
-        public bool IsOpen { get; set; }
+        public int HR { get; set; }
         
         [ProtoMember(4)]
+        public bool IsOpen { get; set; }
+        
+        [ProtoMember(5)]
         public bool IsActive { get; set; }
     }
     
@@ -56,6 +59,61 @@ public class Messages
     {
         [ProtoMember(1)]
         public readonly string MessageType = "GetHRData";
+    }
+
+    [ProtoContract]
+    public class UpdateMessage : MessageTools
+    {
+        [ProtoMember(1)]
+        public readonly string MessageType = "UpdateMessage";
+    }
+    
+    [ProtoContract]
+    public class AppBridgeMessage : MessageTools
+    {
+        [ProtoMember(1)]
+        public readonly string MessageType = "AppBridgeMessage";
+        
+        [ProtoMember(2)]
+        public string CurrentSourceName { get; set; }
+        
+        [ProtoMember(3)]
+        public int onesHR { get; set; }
+        
+        [ProtoMember(4)]
+        public int tensHR { get; set; }
+        
+        [ProtoMember(5)]
+        public int hundredsHR { get; set; }
+        
+        [ProtoMember(6)]
+        public bool isHRConnected { get; set; }
+        
+        [ProtoMember(7)]
+        public bool isHRActive { get; set; }
+        
+        [ProtoMember(8)]
+        public bool isHRBeat { get; set; }
+        
+        [ProtoMember(9)]
+        public float HRPercent { get; set; }
+        
+        [ProtoMember(10)]
+        public int HR { get; set; }
+        
+        [ProtoMember(11)]
+        public AvatarInfo? CurrentAvatar { get; set; }
+    }
+
+    [ProtoContract]
+    public class AvatarInfo
+    {
+        [ProtoMember(1)]
+        public string id { get; set; }
+        [ProtoMember(2)]
+        public string name { get; set; }
+        [ProtoMember(3)]
+        public List<string> parameters { get; set; }
     }
 }
 

@@ -8,9 +8,9 @@ namespace HRtoVRChat_OSC.HRManagers
         string pubUrl = String.Empty;
         int HR = 0;
 
-        private Thread _thread = null;
+        private Thread? _thread = null;
 
-        private WebsocketTemplate wst;
+        private WebsocketTemplate? wst;
 
         public bool Init(string url)
         {
@@ -119,8 +119,9 @@ namespace HRtoVRChat_OSC.HRManagers
             VerifyClosedThread();
         }
 
+        public string GetName() => "Pulsoid";
         public int GetHR() => HR;
-        public bool IsOpen() => !shouldUpdate.IsCancellationRequested && !string.IsNullOrEmpty(pubUrl);
-        public bool IsActive() => IsOpen();
+        public bool IsOpen() => (wst?.IsAlive ?? false) && HR > 0;
+        public bool IsActive() => wst?.IsAlive ?? false;
     }
 }

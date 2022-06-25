@@ -149,6 +149,8 @@ public class OmniceptManager : HRManager
         });
         _worker.Start();
     }
+    
+    public string GetName() => "Omnicept";
 
     public int GetHR() => HR;
 
@@ -158,7 +160,7 @@ public class OmniceptManager : HRManager
         token.Cancel();
     }
 
-    public bool IsOpen() => m_isConnected;
+    public bool IsOpen() => m_isConnected && HR > 0;
 
-    public bool IsActive() => IsOpen();
+    public bool IsActive() => m_isConnected;
 }

@@ -1,0 +1,156 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:avaloniaEdit="https://github.com/avaloniaui/avaloniaedit"
+        xmlns:webview="clr-namespace:WebViewControl;assembly=WebViewControl.Avalonia"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
+        Width="600" Height="500" WindowStartupLocation="CenterOwner"
+        MaxWidth="600" MaxHeight="500" MinWidth="600" MinHeight="500" CanResize="False"
+        x:Class="HRtoVRChat.MainWindow"
+        Icon="/Assets/hrtovrchat_logo.ico"
+        Title="HRtoVRChat">
+        
+        <Window.Styles>
+                <Style Selector="TextBlock.h1">
+                        <Setter Property="FontSize" Value="24"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                </Style>
+        </Window.Styles>
+        
+        <Panel>
+                <!--LeftBar-->
+                <Canvas Width="150" Height="500" Background="#0c0c0c" HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <Button Width="150" Background="transparent" Click="HomeButtonPressed" Canvas.Top="5">
+                                <StackPanel Orientation="Horizontal">
+                                        <PathIcon Data="{StaticResource home_regular}" HorizontalAlignment="Left"></PathIcon>
+                                        <TextBlock Margin="5,1,0,0">Home</TextBlock>
+                                </StackPanel>
+                        </Button>
+                        <Button Width="150" Background="transparent" Click="ProgramButtonPressed" Canvas.Top="40">
+                                <StackPanel Orientation="Horizontal">
+                                        <PathIcon Data="{StaticResource window_regular}" HorizontalAlignment="Left"></PathIcon>
+                                        <TextBlock Margin="5,1,0,0">Program</TextBlock>
+                                </StackPanel>
+                        </Button>
+                        <Button Width="150" Background="transparent" Canvas.Top="75" Click="UpdatesButtonPressed">
+                                <StackPanel Orientation="Horizontal">
+                                        <PathIcon Data="{StaticResource arrow_download_regular}" HorizontalAlignment="Left" Margin="-1,0,0,0"></PathIcon>
+                                        <TextBlock Margin="6,1,0,0">Updates</TextBlock>
+                                </StackPanel>
+                        </Button>
+                        <Button Width="150" Canvas.Top="110" Background="transparent" Click="ConfigButtonPressed">
+                                <StackPanel Orientation="Horizontal">
+                                        <PathIcon Data="{StaticResource content_settings_regular}" HorizontalAlignment="Left"></PathIcon>
+                                        <TextBlock Margin="5,1,0,0">Config</TextBlock>
+                                </StackPanel>
+                        </Button>
+                        <Button Width="150" Canvas.Top="145" Background="transparent" Click="IncomingDataButtonPressed">
+                                <StackPanel Orientation="Horizontal">
+                                        <PathIcon Data="{StaticResource data_usage_regular}" HorizontalAlignment="Left"></PathIcon>
+                                        <TextBlock Margin="5,1,0,0">Incoming Data</TextBlock>
+                                </StackPanel>
+                        </Button>
+                        <Button Width="150" Canvas.Top="365" Background="#212121" Click="HideAppButtonPressed">
+                                <StackPanel Orientation="Horizontal">
+                                        <PathIcon Data="{StaticResource slide_hide_regular}" HorizontalAlignment="Left"></PathIcon>
+                                        <TextBlock Margin="5,1,0,0">Hide Application</TextBlock>
+                                </StackPanel>
+                        </Button>
+                        <Button Width="150" Canvas.Top="400" Background="Red" Click="ExitAppButtonPressed">
+                                <StackPanel Orientation="Horizontal">
+                                        <PathIcon Data="{StaticResource prohibited_regular}" HorizontalAlignment="Left"></PathIcon>
+                                        <TextBlock Margin="5,1,0,0">Exit</TextBlock>
+                                </StackPanel>
+                        </Button>
+                        <Button Width="150" Canvas.Top="450" Background="transparent" Click="GitHubButtonPressed">
+                                <StackPanel Orientation="Horizontal">
+                                        <Image Source="Assets/github.png" Width="35"></Image>
+                                        <TextBlock Margin="10,9,0,0">GitHub</TextBlock>
+                                </StackPanel>
+                        </Button>
+                </Canvas>
+                <!--Home Tab-->
+                <Canvas Width="450" HorizontalAlignment="Right" Name="HomeCanvas" IsVisible="True">
+                        <TextBlock FontSize="20" FontWeight="Bold"
+                                   Canvas.Left="155" Canvas.Top="5">HRtoVRChat</TextBlock>
+                        <TextBlock Canvas.Left="5" Canvas.Top="80" Width="440"
+                                   TextWrapping="Wrap" TextAlignment="Center">
+                                Currently, the WebView is only supported on Windows, as there are significant issues with it on macOS, and it isn't even supported on Linux.
+                        </TextBlock>
+                        <TextBlock Canvas.Top="250" Canvas.Left="45">You can still access the latest news page</TextBlock>
+                        <Button Canvas.Top="245" Canvas.Left="330" Click="HereButtonPressed">here</Button>
+                </Canvas>
+                <!--Program Tab-->
+                <Canvas Width="450" HorizontalAlignment="Right" Name="ProgramCanvas" IsVisible="False">
+                        <Panel Width="400" Height="300" Canvas.Left="25" Canvas.Top="25">
+                                <avaloniaEdit:TextEditor Background="#0c0c0c" Foreground="White" 
+                                                         FontFamily="Courier New" Focusable="False" FontSize="12" 
+                                                         IsReadOnly="True" WordWrap="True"
+                                                         Name="OutputTextBox"></avaloniaEdit:TextEditor>
+                        </Panel>
+                        <Label Canvas.Bottom="15" Canvas.Left="25" Name="StatusLabel">Status: STOPPED</Label>
+                        <Button Canvas.Left="238" Canvas.Bottom="10" Click="StartButtonPressed">START</Button>
+                        <Button Canvas.Left="310" Canvas.Bottom="10" Click="StopButtonPressed">STOP</Button>
+                        <Button Canvas.Left="375" Canvas.Bottom="10" Click="KillButtonPressed">KILL</Button>
+                        <CheckBox Canvas.Bottom="50" Canvas.Left="25"
+                                  Name="AutoStartCheckBox" Click="AutoStartButtonPressed">Auto Start</CheckBox>
+                        <CheckBox Canvas.Bottom="50" Canvas.Left="150"
+                                  Name="SkipVRCCheckBox" Click="SkipVRCCheckButtonPressed">Skip VRChat Check</CheckBox>
+                        <CheckBox Canvas.Bottom="50" Canvas.Left="325"
+                                  Name="NeosBridgeCheckBox" Click="NeosBridgeButtonPressed">Neos Bridge</CheckBox>
+                        <TextBox Canvas.Bottom="130" Canvas.Left="25" Width="330" Name="CommandBox"
+                                 Watermark="Enter a Command"></TextBox>
+                        <Button Canvas.Bottom="130" Canvas.Left="370" Click="SendButtonPressed">SEND</Button>
+                </Canvas>
+                <!--Updates Tab-->
+                <Canvas Width="450" HorizontalAlignment="Right" Name="UpdatesCanvas" IsVisible="False">
+                        <TextBlock Canvas.Left="5" Canvas.Top="5" Name="InstalledVersionLabel">Installed Version: </TextBlock>
+                        <TextBlock Canvas.Left="5" Canvas.Top="30" Name="LatestVersionLabel">Latest Version: </TextBlock>
+                        <Button Canvas.Top="12" Canvas.Right="5" Click="UpdatesRefreshButtonPressed">REFRESH</Button>
+                        <Button Canvas.Left="138" Canvas.Top="100" Name="UpdateButton"
+                                Click="UpdateSoftwareButtonPressed">UPDATE SOFTWARE</Button>
+                        <TextBlock Canvas.Left="5" Canvas.Top="170">Total Progress:</TextBlock>
+                        <ProgressBar Canvas.Left="5" Canvas.Top="200" Width="440" Name="TotalProgressBar"></ProgressBar>
+                        <TextBlock Canvas.Left="5" Canvas.Top="245">Current Task Progress:</TextBlock>
+                        <ProgressBar Canvas.Left="5" Canvas.Top="275" Width="440" Name="TaskProgressBar"></ProgressBar>
+                </Canvas>
+                <!--Config Tab-->
+                <Canvas Width="450" HorizontalAlignment="Right" Name="ConfigCanvas" IsVisible="False">
+                        <TextBlock Canvas.Top="5" Canvas.Left="5">Select a Config Value</TextBlock>
+                        <Canvas Name="ConfigSelections">
+                                <StackPanel Spacing="5" Name="LeftStackPanelConfig" Canvas.Left="5" Canvas.Top="38"></StackPanel>
+                                <StackPanel Spacing="5" Canvas.Left="225" Name="RightStackPanelConfig"></StackPanel>
+                        </Canvas>
+                        <!--Yes, this is my separator-->
+                        <Label CornerRadius="5" Width="350" Height="5" Background="#1f1f1f" 
+                               Canvas.Left="50" Canvas.Top="300"></Label>
+                        <TextBlock Canvas.Left="5" Canvas.Bottom="160" FontSize="18"
+                                   Name="ConfigNameLabel">Select a Config Value</TextBlock>
+                        <TextBlock Canvas.Left="5" Canvas.Bottom="135" FontSize="15"
+                                   Name="ConfigValueType">Value Type</TextBlock>
+                        <TextBlock Canvas.Left="5" Canvas.Bottom="5" FontSize="12" TextAlignment="Left" TextWrapping="Wrap"
+                                   Width="200" Height="120"
+                                   Name="ConfigDescription">Description</TextBlock>
+                        <TextBox Canvas.Left="210" Canvas.Bottom="55" Width="230"
+                                 Watermark="Enter a Value Here"
+                                 TextAlignment="Center"
+                                 Name="ConfigValue"></TextBox>
+                        <Button Canvas.Left="210" Canvas.Bottom="15" Width="230" Click="SaveConfigButtonPressed">
+                                <TextBlock TextAlignment="Center">SAVE</TextBlock>
+                        </Button>
+                </Canvas>
+                <!--Incoming Data Tab-->
+                <Canvas Width="450" HorizontalAlignment="Right" Name="IncomingDataCanvas" IsVisible="False">
+                        <TextBlock FontSize="16" FontWeight="Bold"
+                                   Canvas.Left="5" Canvas.Top="5">HRtoVRChat_OSC Data</TextBlock>
+                        <TextBlock Canvas.Left="5" Canvas.Top="30"
+                                   Name="AppBridgeConnectedLabel">App Bridge Connection Status: </TextBlock>
+                        <TextBox Background="#0c0c0c" Foreground="White" 
+                                                     FontFamily="Courier New" Focusable="False" FontSize="12" 
+                                                     IsReadOnly="True" TextWrapping="Wrap"
+                                                     Canvas.Left="5" Canvas.Top="80" Width="435" Height="400"
+                                                     Name="OutputIncomingData"></TextBox>
+                </Canvas>
+        </Panel>
+</Window>

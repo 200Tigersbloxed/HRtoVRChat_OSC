@@ -1,4 +1,6 @@
-﻿using HRtoVRChat_OSC.HRManagers;
+﻿using System.Reflection;
+using HRtoVRChat_OSC.HRManagers;
+using HRtoVRChat_OSC_SDK;
 
 namespace HRtoVRChat_OSC
 {
@@ -6,10 +8,12 @@ namespace HRtoVRChat_OSC
     {
         private static HRType hrType = HRType.Unknown;
         private static HRManager activeHRManager;
+        private static AppBridge _appBridge = new AppBridge();
         private static bool isRestarting;
         private static bool RunHeartBeat = false;
         public static Action<int, int, int, int, bool, bool> OnHRValuesUpdated = (ones, tens, hundreds, HR, isConnected, isActive) => { };
         public static Action<bool, bool> OnHeartBeatUpdate = (isHeartBeat, shouldStart) => { };
+        private static NeosBridge _neosBridge;
         
         private class currentHRSplit
         {
@@ -18,7 +22,7 @@ namespace HRtoVRChat_OSC
             public int hundreds = 0;
         }
 
-        private static string[] Gargs;
+        public static string[] Gargs { get; private set; } = new string[]{};
         
         private static CustomTimer loopCheck;
         
@@ -28,9 +32,55 @@ namespace HRtoVRChat_OSC
         private static CancellationTokenSource btToken = new CancellationTokenSource();
         static void Main(string[] args)
         {
-            bool foundOnStart = OSCManager.Detect();
             Gargs = args;
+            bool foundOnStart = OSCManager.Detect();
             ConfigManager.CreateConfig();
+            OSCAvatarListener.Init();
+            _appBridge.InitServer(() =>
+            {
+                if (activeHRManager != null)
+                {
+                    try
+                    {
+                        Messages.AppBridgeMessage apm = new()
+                        {
+                            CurrentSourceName = activeHRManager.GetName(),
+                            CurrentAvatar = OSCAvatarListener.CurrentAvatar?.ToAvatarInfo()
+                        };
+                        foreach (ParamsManager.HRParameter hrParameter in ParamsManager.Parameters)
+                        {
+                            if(hrParameter.OriginalParameterName != null && hrParameter.ParamValue != null)
+                                try
+                                {
+                                    PropertyInfo? pi = apm.GetType().GetProperty(hrParameter.OriginalParameterName);
+                                    if (pi != null)
+                                        pi.SetValue(apm, Convert.ChangeType(hrParameter.ParamValue, pi.PropertyType));
+                                }
+                                catch (Exception e)
+                                {
+                                    LogHelper.Error(
+                                        "Failed to convert Parameter " + hrParameter.OriginalParameterName + " for AppBridge!", e);
+                                }
+                        }
+                        return apm;
+                    }
+                    catch (Exception e)
+                    {
+                        LogHelper.Error("Failed to forward data from activeHRManager to AppBridge!", e);
+                        return null;
+                    }
+                }
+                else
+                    return null;
+            });
+            if (!Directory.Exists(SDKManager.SDKsLocation))
+                Directory.CreateDirectory(SDKManager.SDKsLocation);
+            if (args.Contains("--neos-bridge"))
+            {
+                LogHelper.Log("Enabling NeosBridge");
+                _neosBridge = new NeosBridge();
+                NeosBridge.OnCommand += command => HandleCommand(command, true);
+            }
             if (foundOnStart)
             {
                 Check();
@@ -78,6 +128,10 @@ namespace HRtoVRChat_OSC
                     loopCheck.Close();
                     loopCheck = new CustomTimer(5000, (ct) => LoopCheck());
                 }
+                // Save all logs to file
+                DateTime dt = DateTime.Now;
+                LogHelper.SaveToFile($"{dt.Hour}-{dt.Minute}-{dt.Second}-{dt.Millisecond} {dt.Day}-{dt.Month}-{dt.Year}");
+                // Exit
                 LogHelper.Warn("VRChat was not detected! Press any key to continue.");
                 Console.ReadKey();
                 Environment.Exit(1);
@@ -94,7 +148,7 @@ namespace HRtoVRChat_OSC
                                                            "refreshconfig - Refreshes the Config from File.\n" +
                                                            "help - Shows available commands.\n";
 
-        private static void HandleCommand(string? input)
+        private static void HandleCommand(string? input, bool fromBridge = false)
         {
             string[] inputs = input?.Split(' ') ?? new string[0];
             switch (inputs[0].ToLower())
@@ -147,11 +201,27 @@ namespace HRtoVRChat_OSC
                     ConfigManager.CreateConfig();
                     ParamsManager.InitParams();
                     break;
+                case "biassdk":
+                    if (!string.IsNullOrEmpty(inputs[1]))
+                        SDKManager.PreferredSDK = inputs[1];
+                    break;
+                case "unbiassdk":
+                    SDKManager.PreferredSDK = String.Empty;
+                    break;
+                case "destroysdk":
+                    if (activeHRManager != null && !string.IsNullOrEmpty(inputs[1]))
+                    {
+                        SDKManager s =
+                            (SDKManager) Convert.ChangeType(activeHRManager, typeof(SDKManager));
+                        s.DestroySDKByName(inputs[1]);
+                    }
+                    break;
                 default:
                     LogHelper.Warn($"Unknown Command \"{inputs[0]}\"!");
                     break;
             }
-            HandleCommand(Console.ReadLine());
+            if(!fromBridge)
+                HandleCommand(Console.ReadLine());
         }
 
         public static CustomTimer BoopUwUTimer;
@@ -203,10 +273,20 @@ namespace HRtoVRChat_OSC
             // Stop Extraneous Tasks
             if (loopCheck?.IsRunning ?? false)
                 loopCheck.Close();
+            if(_neosBridge != null)
+                _neosBridge.cts.Cancel();
             LogHelper.Log("Stopped");
             // Quit the App
             if (quitApp)
-                Environment.Exit(1);
+            {
+                // Save all logs to file
+                DateTime dt = DateTime.Now;
+                LogHelper.SaveToFile($"{dt.Hour}-{dt.Minute}-{dt.Second}-{dt.Millisecond} {dt.Day}-{dt.Month}-{dt.Year}");
+                // Stop AppBridge
+                _appBridge.StopServer();
+                // Exit
+                Environment.Exit(0);
+            }
             if (autoStart)
             {
                 LogHelper.Log("Restarting when VRChat Detected");
@@ -359,8 +439,8 @@ namespace HRtoVRChat_OSC
             {
                 if (!activeHRManager.IsActive())
                 {
-                    LogHelper.Warn("HRListener is currently inactive! Start it first!");
-                    return;
+                    LogHelper.Warn("HRListener is currently inactive! Attempting to stop anyways.");
+                    //return;
                 }
                 activeHRManager.Stop();
             }

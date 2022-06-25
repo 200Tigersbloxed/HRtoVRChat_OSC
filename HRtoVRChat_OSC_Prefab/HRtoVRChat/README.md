@@ -1,4 +1,19 @@
-﻿# HRtoVRChat Prefab
+﻿# HRtoVRChat_OSC Avatar Setup
+
+The HRtoVRChat-Prefab (which can be found on the Latest Release Artifacts for HRtoVRChat_OSC) contains contents to get started with HRtoVRChat_OSC. Please read through this **whole document** for information on everything included.
+
+> ## ℹ️ IMPORTANT ℹ️
+> 
+> If you need any extended help, please don't be afraid to join the [discord server](https://fortnite.lol/discord), or ask on the 
+> [discussions board](https://github.com/200Tigersbloxed/HRtoVRChat_OSC/discussions)!
+
+## Video Tutorial
+
+If you find it difficult to understand the written instructions, please see the video tutorial below:
+
+https://vimeo.com/697202508
+
+# HRtoVRChat Prefab
 Version 2
 
 Created by 200Tigersbloxed
@@ -11,6 +26,21 @@ Created by 200Tigersbloxed
 + FX Layer - The Animator Controller being used as the FX Layer
 + TargetHRObject - The GameObject containing the TargetHRObject Component
 
+## Supported Parameters
+
+The Expression Parameters supported with a description
+
+| Parameter Name | Parameter Type | Parameter Default | Parameter Saved | Description                                                                           |
+|----------------|----------------|-------------------|-----------------|---------------------------------------------------------------------------------------|
+| onesHR         | `int`          | 0                 | false           | Ones spot in the Heart Rate reading; 12**3** *(legacy)*                               |
+| tensHR         | `int`          | 0                 | false           | Tens spot in the Heart Rate reading; 1**2**3 *(legacy)*                               |
+| hundredsHR     | `int`          | 0                 | false           | Hundreds spot in the Heart Rate reading; **1**23 *(legacy)*                           |
+| isHRConnected  | `bool`         | false             | false           | Returns whether the device's connection is valid or not                               |
+| isHRActive     | `bool`         | false             | false           | Returns whether the connection is valid or not                                        |
+| isHRBeat       | `bool`         | false             | false           | Estimation on when the heart is beating                                               |
+| HRPercent      | `float`        | false             | false           | Range of HR between the MinHR and MaxHR config value                                  |
+| HR             | `int`          | 0                 | false           | Returns the raw HR, ranged from 0 - 255. *(required)*                                 |
+
 ## Getting Started
 
 The HRtoVRChat Prefab v2 was designed to be as simple as possible with a quick setup.
@@ -20,11 +50,11 @@ The HRtoVRChat Prefab v2 was designed to be as simple as possible with a quick s
 Unlike v1, v2 is designed to be snap-able, meaning you can put the prefab wherever you want, and it'll work.
 
 > # ⚠️ Before continuing any further! ⚠️
-
-**Please make a backup of your avatar!**
-
-This system is **entirely automated** and may cause damage to your Avatar!
-
+>
+> **Please make a backup of your avatar!**
+>
+> This system is **entirely automated** and may cause damage to your Avatar!
+>
 > *you have been warned...*
 
 Inside of the `HRtoVRChat` folder, find the `HRContainer` (1) prefab.
@@ -71,32 +101,19 @@ The GitHub button will just take you to the GitHub Repository.
 Underneath the `Discovered TargetHRObjects` header, you will see a list of buttons that correspond to every GameObject in the scene that has a TargetHRObject Component.
 Click the button for the HRContainer you'll be working with.
 
-After clicking that button, you will then see a label Saying `SelectedHRTarget: [name]` (1), this should the same name of the button you just clicked.
+You will then see a label Saying `SelectedHRTarget: [name]` (1), click that.
 
-After setting any options, you may now press the `Create Animations!` Button (3) whenever you're ready to continue.
+You may press the `Create Animations!` Button (3) whenever you're ready to continue.
 
 #### Options (2)
 
 + friendlyName - An identifier to be used in the Layers corresponding to your HRContainer
-  + This should be different for each HRContainer in the same Unity Project
-  + This is because all animations output to an output folder (inside of the HRtoVRChat folder), underneath this name, so having the same name will overwrite other AnimationClips.
+  + This should be different for each HRContainer
 + useSmallerHR - Uses only one HR int parameter instead of the conventional three parameters
   + Note: This will lock your HR from 0-255, but to be fair, if your HR is over 255, you need to go to the ER.
-+ writeToParameters - Will write all required parameters to your expression parameters.
 + deleteComponentOnDone - Will remove the TargetHRObject Component on the HRContainer when finished
 + overwriteLayers - Will overwrite all layers that have the same name
   + This will not overwrite any of your layers outside of the HR Layers.
-+ writeDefaults - Whether or not to enable Write Defaults
-  + Write Defaults are "whether or not the AnimatorStates writes back the default values for properties that are not animated by its Motion."
-  + [**VRChat recommends this be off**](https://docs.vrchat.com/docs/avatars-30#write-defaults-on-states)
-+ HR_paramname
-  + Defines the parameter name to use for the HR parameter
-+ onesHR_paramname
-  + Defines the parameter name to use for the onesHR parameter
-+ tensHR_paramname
-  + Defines the parameter name to use for the tensHR parameter
-+ hundredsHR_paramname
-  + Defines the parameter name to use for the hundredsHR parameter
 
 ![The Editor Window](https://i.imgur.com/6DCNRfa.png)
 
@@ -106,31 +123,25 @@ If you get a Dialog Window saying 'Failed to Complete Operation!', then please c
 
 ### Finishing Up
 
-~~Once the process is complete, make sure to Apply your FX Controller to your Avatar~~
+Once the process is complete, make sure to Apply your FX Controller to your Avatar
 
-**As of 19/04/2022, parameters will now be added to your parameter sheet automatically.**
+Don't forget to add any parameters used to your Expression Parameters
 
-*(if enabled)*
+**If you used a Smaller HR**:
 
-*please for the love of all, make a backup in case something goes wrong*
+Add the `HR` (int) Parameter
 
-> **In case if you still want to add them manually**:
-> 
-> Don't forget to add any parameters used to your Expression Parameters
-> 
-> **If you used a Smaller HR**:
-> 
-> Add the `HR` (int) Parameter
-> 
-> **If you did NOT use a Smaller HR**:
-> 
-> Add the following Parameters:
-> + `onesHR` (int)
-> + `tensHR` (int)
-> + `hundredsHR` (int)
-> 
-> Now you're all set to publish!
+**If you did NOT use a Smaller HR**:
+
+Add the following Parameters:
++ `onesHR` (int)
++ `tensHR` (int)
++ `hundredsHR` (int)
+
+Now you're all set to publish!
 
 ## Source Code
 
-All code is visible in the `Scripts` folder (under the respective LICENSE), and is open on the GitHub Repository
+All code is visible in the `Scripts` folder (under the respective LICENSE), but
+is also mirrored at 
+[this gist](https://gist.github.com/200Tigersbloxed/6c5798cb959b8073deaf5d6a3c17454f)

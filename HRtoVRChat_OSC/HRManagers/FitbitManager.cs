@@ -107,6 +107,8 @@ namespace HRtoVRChat_OSC.HRManagers
             _thread.Start();
         }
 
+        public string GetName() => "FitbitHRtoWS";
+
         public int GetHR() => HR;
 
         private async Task Close()

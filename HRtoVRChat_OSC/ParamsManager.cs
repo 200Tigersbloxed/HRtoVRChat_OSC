@@ -6,9 +6,12 @@
 
         public static void InitParams()
         {
-            Parameters.Add(new IntParameter(hro => hro.ones, ConfigManager.LoadedConfig.ParameterNames["onesHR"]));
-            Parameters.Add(new IntParameter(hro => hro.tens, ConfigManager.LoadedConfig.ParameterNames["tensHR"]));
-            Parameters.Add(new IntParameter(hro => hro.hundreds, ConfigManager.LoadedConfig.ParameterNames["hundredsHR"]));
+            Parameters.Add(new IntParameter(hro => hro.ones, ConfigManager.LoadedConfig.ParameterNames["onesHR"],
+                "onesHR"));
+            Parameters.Add(new IntParameter(hro => hro.tens, ConfigManager.LoadedConfig.ParameterNames["tensHR"],
+                "tensHR"));
+            Parameters.Add(new IntParameter(hro => hro.hundreds,
+                ConfigManager.LoadedConfig.ParameterNames["hundredsHR"], "hundredsHR"));
             Parameters.Add(new IntParameter((hro) =>
             {
                 string HRstring = $"{hro.hundreds}{hro.tens}{hro.ones}";
@@ -26,7 +29,7 @@
                 if (HR < 0)
                     HR = 0;
                 return HR;
-            }, ConfigManager.LoadedConfig.ParameterNames["HR"]));
+            }, ConfigManager.LoadedConfig.ParameterNames["HR"], "HR"));
             Parameters.Add(new FloatParameter((hro) =>
             {
                 float targetFloat = 0f;
@@ -40,9 +43,11 @@
                 else
                     targetFloat = (HR - minhr) / (maxhr - minhr);
                 return targetFloat;
-            }, ConfigManager.LoadedConfig.ParameterNames["HRPercent"]));
-            Parameters.Add(new BoolParameter(hro => hro.isActive, ConfigManager.LoadedConfig.ParameterNames["isHRActive"]));
-            Parameters.Add(new BoolParameter(hro => hro.isConnected, ConfigManager.LoadedConfig.ParameterNames["isHRConnected"]));
+            }, ConfigManager.LoadedConfig.ParameterNames["HRPercent"], "HRPercent"));
+            Parameters.Add(new BoolParameter(hro => hro.isActive,
+                ConfigManager.LoadedConfig.ParameterNames["isHRActive"], "isHRActive"));
+            Parameters.Add(new BoolParameter(hro => hro.isConnected,
+                ConfigManager.LoadedConfig.ParameterNames["isHRConnected"], "isHRConnected"));
             Parameters.Add(new BoolParameter(BoolCheckType.HeartBeat, ConfigManager.LoadedConfig.ParameterNames["isHRBeat"]));
         }
 
@@ -57,8 +62,9 @@
 
         public class IntParameter : HRParameter
         {
-            public IntParameter(Func<HROutput, int> getVal, string parameterName)
+            public IntParameter(Func<HROutput, int> getVal, string parameterName, string original)
             {
+                OriginalParameterName = original;
                 ParameterName = parameterName;
                 LogHelper.Debug($"IntParameter with ParameterName: {parameterName}, has been created!");
                 Program.OnHRValuesUpdated += (ones, tens, hundreds, HR, isConnected, isActive) =>
@@ -76,6 +82,7 @@
                 };
             }
             
+            public string OriginalParameterName { get; set; }
             public string ParameterName { get; set; }
             public string ParamValue { get; set; }
             public string DefaultValue => "0";
@@ -90,8 +97,9 @@
 
         public class BoolParameter : HRParameter
         {
-            public BoolParameter(Func<HROutput, bool> getVal, string parameterName)
+            public BoolParameter(Func<HROutput, bool> getVal, string parameterName, string original)
             {
+                OriginalParameterName = original;
                 ParameterName = parameterName;
                 LogHelper.Debug($"BoolParameter with ParameterName: {parameterName}, has been created!");
                 Program.OnHRValuesUpdated += (ones, tens, hundreds, HR, isConnected, isActive) =>
@@ -113,6 +121,12 @@
 
             public BoolParameter(BoolCheckType bct, string parameterName)
             {
+                switch (bct)
+                {
+                    case BoolCheckType.HeartBeat:
+                        OriginalParameterName = "isHRBeat";
+                        break;
+                }
                 ParameterName = parameterName;
                 LogHelper.Debug($"BoolParameter with ParameterName: {parameterName} and BoolCheckType of: {bct}, has been created!");
                 Program.OnHeartBeatUpdate += (isHeartBeat, shouldRestart) =>
@@ -127,6 +141,7 @@
                 };
             }
             
+            public string OriginalParameterName { get; set; }
             public string ParameterName { get; set; }
             public string ParamValue { get; set; }
             public string DefaultValue => "false";
@@ -141,8 +156,9 @@
 
         public class FloatParameter : HRParameter
         {
-            public FloatParameter(Func<HROutput, float> getVal, string parameterName)
+            public FloatParameter(Func<HROutput, float> getVal, string parameterName, string original)
             {
+                OriginalParameterName = original;
                 ParameterName = parameterName;
                 LogHelper.Debug($"FloatParameter with ParameterName: {parameterName} has been created!");
                 Program.OnHRValuesUpdated += (ones, tens, hundreds, HR, isConnected, isActive) =>
@@ -162,6 +178,7 @@
                 };
             }
 
+            public string OriginalParameterName { get; set; }
             public string ParameterName { get; set; }
             public string ParamValue { get; set; }
             public string DefaultValue => "0";
@@ -186,6 +203,7 @@
 
         public interface HRParameter
         {
+            public string OriginalParameterName { get; set; }
             public string ParameterName { get; set; }
             public string ParamValue { get; set; }
             public string DefaultValue { get; }

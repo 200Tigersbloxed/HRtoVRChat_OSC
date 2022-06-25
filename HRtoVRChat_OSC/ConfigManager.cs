@@ -63,7 +63,7 @@ namespace HRtoVRChat_OSC
         public string textfilelocation = String.Empty;
         [TommyComment("The maximum HR for HRPercent")]
         [TommyInclude]
-        public double MaxHR = 150;
+        public double MaxHR = 255;
         [TommyComment("The minimum HR for HRPercent")]
         [TommyInclude]
         public double MinHR = 0;

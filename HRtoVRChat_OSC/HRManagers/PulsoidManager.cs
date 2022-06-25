@@ -89,6 +89,8 @@ namespace HRtoVRChat_OSC.HRManagers
             });
             _thread.Start();
         }
+        
+        public string GetName() => "Pulsoid (DEPRECATED)";
 
         public int GetHR() => HR;
 
@@ -113,16 +115,10 @@ namespace HRtoVRChat_OSC.HRManagers
 
         public void Stop()
         {
-            if (wst != null)
-            {
-                tokenSource.Cancel();
-                LogHelper.Debug("Sent message to Stop WebSocket");
-            }
-            else
-                LogHelper.Warn("WebSocket is already null! Did you mean to Initialize()?");
+            tokenSource.Cancel();
         }
 
-        public bool IsOpen() => IsConnected;
+        public bool IsOpen() => IsConnected && HR > 0;
 
         public bool IsActive() => IsConnected;
     }

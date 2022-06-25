@@ -60,8 +60,9 @@
             VerifyClosedThread();
         }
 
+        public string GetName() => "TextFile";
         public int GetHR() => HR;
-        public bool IsOpen() => !shouldUpdate.IsCancellationRequested;
-        public bool IsActive() => IsOpen();
+        public bool IsOpen() => !shouldUpdate.IsCancellationRequested && HR > 0;
+        public bool IsActive() => !shouldUpdate.IsCancellationRequested;
     }
 }

@@ -2,8 +2,16 @@
 
 namespace HRtoVRChat_OSC_SDK;
 
+[Obsolete("ExternalSDK is no longer needed! HRSDK is now universal.\n" +
+          "ExternalSDK will soon be phased out and no longer work!")]
 public abstract class ExternalHRSDK
 {
+    public ExternalHRSDK()
+    {
+        Console.WriteLine("(WARN) ExternalSDK is no longer needed! HRSDK is now universal.\n" +
+                          "ExternalSDK will soon be phased out and no longer work!");
+    }
+    
     /// <summary>
     /// The name of your SDK
     /// </summary>
