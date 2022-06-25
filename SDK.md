@@ -1,229 +1,312 @@
-# HRtoVRChat_OSC_SDK
+# HRtoVRChat_OSC_SDK Docs
 
 Created by 200Tigersbloxed
 
 ## Preface
 
-The HRtoVRChat_OSC_SDK provides developers a way to send their HeartRate Data to HRtoVRChat_OSC to be forwarded to their avatar in VRChat. It is a super simple to use library written in C#, running on either [.NET Framework 4.8](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) or [.NET 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0), using [SuperSimpleTCP](https://github.com/jchristn/SuperSimpleTcp) for the protocol, and [protobuf-net](https://github.com/protobuf-net/protobuf-net) for serialization and deserialization.
+The HRtoVRChat_OSC_SDK provides developers with an SDK to implement their own devices into the HRtoVRChat application. It is a simple library written in C# with either a [.NET Framework 4.8](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) or [.NET Core 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0). It is up to the developer to decide whether to use the framework or core libraries, as both are supported, however *it is recommended to use the core libraries where possible*.
 
-## Terminology
+The library has two ways of communication with the application.
 
-+ HRSDK
-  + The main abstract class in which an SDK will derive to be able to connect and send messages to the server
-+ HRMessage
-  + The message that will be serialized to be sent to the server and be de-serialized then processed
-+ Solution
-  + The .NET solution
-+ Server
-  + The HRtoVRChat_OSC application
+1) Headless via. [SuperSimpleTCP](https://github.com/jchristn/SuperSimpleTcp) and packaging with [protobuf-net](https://github.com/protobuf-net/protobuf-net) libraries.
+
+2) With [Reflection](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/reflection) by loading a Class Library from the SDKs folder that HRtoVRChat_OSC generates.
+
+## Prerequisites
+
++ A .NET Compatible IDE
+
+  + Such as:
+
+    + [Visual Studio](https://visualstudio.microsoft.com/)
+    + [Rider](https://www.jetbrains.com/rider/)
+
++ [The SDK Files](https://github.com/200Tigersbloxed/HRtoVRChat_OSC/releases/latest/download/HRtoVRChat_OSC_SDK.zip)
 
 > ___
 > ## ⚠️ WARNING ⚠️
-> This tutorial assumes you know how to use an IDE and develop either .NET Framework 4.8 apps or .NET6 apps. Please see [this guide](https://docs.microsoft.com/en-us/learn/modules/dotnet-introduction/) if you don't know how to develop with .NET
+> This guide assumes you know how to use an IDE and develop either .NET Framework 4.8 apps or .NET6 apps. Please see [this guide](https://docs.microsoft.com/en-us/learn/modules/dotnet-introduction/) if you don't know how to develop with .NET
 > ___
 
-## Setting Up
+## Creating the SDK Library
 
-Create your application solution in your IDE. Your application can either be a .NET Framework 4.8 application or a .NET6 application.
+First, start with a new C# Class Library for .NET Core or Framework (see Preface for info on which one you should choose). We will call this our **HRExtension**, and that's how it will be referred to in the rest of this guide.
 
->___
-> ### ℹ️ Which should I use? ℹ️
-> .NET6 is a newer .NET version, which is supported more by Microsoft than .NET Framework. .NET6 also supports more platforms like macOS and Linux, so using .NET6 will reach a further audience. However, .NET Framework is generally easier to work with and more Windows users have installed it already.
-> ___
+Inside of our HRExtension's Solution, import the Library of choice, and then create a new Class file if you don't have one already, and make sure to name the class accordingly. After you've done so, be sure to include the `HRtoVRChat_OSC_SDK` namespace in the Class file.
 
-Once you have your solution created, we'll need to import the library to be used. [Download the latest SDK](https://github.com/200Tigersbloxed/HRtoVRChat_OSC/releases/latest/download/HRtoVRChat_OSC_SDK.zip), and extract it to a directory. Inside the folder, you'll see two folders named `net48` and `net6.0`. Open the folder in which your solution is created.
-
-> ___
-> ### ℹ️ Which folder do I open? ℹ️
-> If you're using .NET Framework 4.8, open the `net48` folder.
->
->If you're using .NET6, open the `net6.0` or `net48` folder. .NET6 supports importing .NET Framework libraries, however, it's recommended to use the .NET6 library for .NET6.
->___
-
-Find the file named `HRtoVRChat_OSC_SDK.dll` (same for both folders). This is the library that we will import into our solution.
-
-## Creating our SDK
-
-Now that you have the libraries imported, import the SDK into the current file.
-
-```csharp
+```cs
 using HRtoVRChat_OSC_SDK;
 ```
 
-Then, create a new class. For example, I'll call the class `SDKInstance`. Make this either a public, private, or internal class depending on your use case.
+Now, derive the class of the HRSDK abstract class
 
-```csharp
-public class SDKInstance
+```cs
+public class HRExtension : HRSDK
 {
-
+    public override HRSDKOptions Options = new HRSDKOptions("HRExtension");
+    public override int HR { get; set; }
+    public override bool IsOpen { get; set; }
+    public override bool IsActive { get; set; }
 }
 ```
 
-Then, derive the class of HRSDK
+Next, we need to start collecting the data when the SDK is ready, so we'll add an override given to use that will invoke once the SDK makes a connection with the OSC Software.
 
-```csharp
-public class SDKInstance : HRSDK
+```cs
+public override void OnSDKOpened()
 {
-
+    // Put your code to start getting the HR Data here (if needed)
 }
 ```
 
-Now you'll see some errors because we have to import our abstract properties. Create these three properties.
+Now, if still needed, you may need to use an Update frame to update data, there's an override provided for that too.
 
-```csharp
-public class SDKInstance : HRSDK
+```cs
+public override void OnSDKUpdate()
 {
-	public override int HR { get; set; }
-	public override bool IsOpen { get; set; }
-	public override bool IsActive { get; set; }
+    /*
+    * This method is invoked every 10ms if loaded with reflection, ~1000ms if over network
+    *
+    * It would be better to use the IsReflected property and make your own thread if the
+    * library is not loaded over reflection if you need a high update rate for updating
+    * the HR data.
+    *
+    * If this is the case, update HR data in a separate Thread, and Push data in the 
+    * OnSDKUpdate override
+    */
 }
 ```
 
-These three properties are the properties we will change to update our data.
+Then, when you're ready to send your data off to the server, invoke the `PushData` method
 
-## Starting the SDK
+```cs
+public void SendCurrentData() =>/*This will send the data to the Server -> */ PushData();
+```
 
-Now, back in our main class, let's set up the `SDKInstance` to be used. In this example, I'll run the `Main` method whenever I want to start the SDK
+Sometimes, you may want to check if the data on the server matches yours, you can do so with the `PullData` and the `OnSDKData(HRMessage)` methods
 
-```csharp
-public class SDKHandler
+```cs
+// Example Usage; usage may vary depending on your need
+public override void OnSDKData(Messages.HRMessage message)
 {
-	private static SDKInstance sdk;
-
-	public static void Main()
-	{
-		sdk = new SDKInstance();
-	}
+    bool isThisSDK = message.SDKName == Options.SDKName;
+    if(isThisSDK)
+        Log(LogLevel.Debug, "Currently using this SDK!")
+    else
+        Log(LogLevel.Warn, "Not using this SDK!")
 }
+
+public void GetServerData() =>/*This will get the server's data -> */ PullData();
 ```
 
-Then, to start the SDK, I'll run the following code wherever the entry point of the application is located.
-
-```csharp
-SDKHandler.Main();
-```
-
-This will start the SDK and attempt to open a connection to the server.
+As demonstrated above, sometimes you may want to log your own data to the client's log. The included `Log(LogLevel, object, ...)` method provides a way for the developer to log.
 
 > ___
-> ### ℹ️ What if  I don't want to start the SDK as soon as I instantiate the class? ℹ️
-> `HRSDK` constructors have a bool parameter called `autoOpen`, which if set to `false`, will require you to call the `Open` method to start the SDK.
+> ## ℹ️ Note ℹ️
+> The Log method currently does not write logs to the OSC Software unless it is being reflected. This will change in the future to expand support for logging to the Network, but for now, it's recommended to implement your own logging solution if IsReflected is false.
 > ___
 
-## Sending data
+Now you may want to close your SDK if you don't want it to be used anymore. There are two ways to do this, and both are acceptable
 
-Now we'll update and send our data to the server. In our example, we'll edit `SDKHandler` to add a method to do this.
+1) Close via. the Network
+    + ```cs
+      public void CloseSDK() =>/*This will only work if IsReflected is false*/ Close();
+      ```
+2) Close by setting IsOpen and IsActive to false
+  + ```cs
+    public void CloseSDK()
+    {
+        IsOpen = false;
+        IsActive = false;
+    }
+    ```
 
-```csharp
-public class SDKHandler
+Or, you could even combine the two
+
+```cs
+public void CloseSDK()
 {
-	private static SDKInstance sdk;
-
-	public static void Main()
-	{
-		sdk = new SDKInstance();
-	}
-
-	public static void UpdateData(int HR, bool IsOpen, bool IsActive)
-	{
-		// Don't call this unless the SDK exists and is open
-		if(sdk != null && sdk.isClientConnected)
-		{
-			// Set Data
-			sdk.HR = HR;
-			sdk.IsOpen = IsOpen;
-			sdk.IsActive = IsActive;
-			// Update
-			sdk.Update();
-		}
-	}
+    if(IsReflected)
+        Close();
+    else
+    {
+        IsOpen = false;
+        IsActive = false;
+    }
 }
 ```
 
-Then, assuming our `HR` is `175`, our `IsOpen` is `true`, and our `IsActive` is `true`, this is how we'll update the data
+Finally, you may need to dispose or reset some things when the SDK does close, which is what the `OnSDKClosed` method is for
 
-```csharp
-SDKHandler.UpdateData(175, true, true);
+```cs
+public override void OnSDKClosed()
+{
+    // Make sure everything is default
+    HR = 0;
+    IsOpen = false;
+    IsActive = false;
+}
 ```
 
-This will upload the data to the server, for it to be forwarded to our avatar! This was the simple setup for setting up the SDK, now all you'll need to do is rearrange everything to work with your HeartRate data source.
+And now you're done with the library portion. If you'd like to test it, you can build and load the artifact as a reflected SDK and test! Here's what our finished code looked like:
 
-# HRSDK Documentation
+> HRExtension / HRExtension.cs
+```cs
+using HRtoVRChat_OSC_SDK;
 
-## base constructors
+namespace HRExtension;
 
-Entire documentation of `HRSDK`'s constructors.
+public class HRExtensionMain : HRSDK
+{
+    public override HRSDKOptions Options = new HRSDKOptions("HRExtension");
+    public override int HR { get; set; }
+    public override bool IsOpen { get; set; }
+    public override bool IsActive { get; set; }
 
-### HRSDK()
+    public override void OnSDKOpened()
+    {
+        // Put your code to start getting the HR Data here (if needed)
+    }
 
-Just a normal constructor. Will open the socket automatically and connect to the server at `127.0.0.1:9000`.
+    public override void OnSDKUpdate()
+    {
+        /*
+        * This method is invoked every 10ms if loaded with reflection, ~1000ms if over network
+        *
+        * It would be better to use the IsReflected property and make your own thread if the
+        * library is not loaded over reflection if you need a high update rate for updating
+        * the HR data.
+        *
+        * If this is the case, update HR data in a separate Thread, and Push data in the 
+        * OnSDKUpdate override
+        */
+    }
 
-### HRSDK(bool autoOpen)
+    public void SendCurrentData() =>/*This will send the data to the Server -> */ PushData();
 
-Defines whether or not the socket will open automatically to connect to the server at `127.0.0.1:9000`.
+    // Example Usage; usage may vary depending on your need
+    public override void OnSDKData(Messages.HRMessage message)
+    {
+        bool isThisSDK = message.SDKName == Options.SDKName;
+        if(isThisSDK)
+            Log(LogLevel.Debug, "Currently using this SDK!")
+        else
+            Log(LogLevel.Warn, "Not using this SDK!")
+    }
 
-### HRSDK(bool autoOpen, string ipPort)
+    public void GetServerData() =>/*This will get the server's data -> */ PullData();
 
-Defines whether or not the socket will open automatically to connect to the server at the given `ipPort`
+    public void CloseSDK()
+    {
+        if(IsReflected)
+            Close();
+        else
+        {
+            IsOpen = false;
+            IsActive = false;
+        }
+    }
 
-### Notes
-
-Note that both `autoOpen` and `ipPort` are defined in the parameter, so you can also instantiate like
-
-```csharp
-new HRSDK(ipPort: "127.0.0.1:8000")
+    public override void OnSDKClosed()
+    {
+        // Make sure everything is default
+        HR = 0;
+        IsOpen = false;
+        IsActive = false;
+    }
+}
 ```
 
-and `autoOpen` will default to `true`, while `ipPort` will be `127.0.0.1:8000`
+> ___
+> ## ℹ️ Note ℹ️
+> If you use any external libraries that HRtoVRChat_OSC does not utilize, then you will need to merge libraries with a tool like [ILRepack](https://github.com/gluck/il-repack). HRtoVRChat_OSC will not load libraries dropped in the SDKs folder!
+> ___
 
-## base properties
+## Creating your Application to run a Headless SDK
 
-Entire documentation of `HRSDK`'s properties.
+This portion of the docs are for taking your previous HRExtension library and using it with your own software to be connected via. Network. For this example, I'll be creating a Console Application, as it's easier to setup, however if you wish to have a User Interface, I'd look into solutions like [Avalonia](https://github.com/AvaloniaUI/Avalonia)
 
-### isClientConnected (bool)
+Underneath the same HRExtension solution, create a new project. Select the Console Application for either Net Framework or NET Core, and create it. I'm going to call it HRExtensionCLI. Inside of this project, we're going to reference our HRExtension project and the HRtoVRChat_OSC_SDK again.
 
-Returns whether or not the SDK is connected to the server.
+Now that we have all of our references, look into the project's files and you should see a Program.cs, open that and find the `static void Main(string[] args)` method it created. This is our entry-point for the program.
 
-### abstract HR (int)
+Inside of this void, we're going to initialize our HRExtension class and start it whenever it opens.
 
-The current Heart Rate.
+> ___
+> ## ⚠️ WARNING ⚠️
+> When opening a network SDK, you must make sure that the HRtoVRChat_OSC software is running and accepting connections from the SDK!
+> ___
 
-### abstract IsOpen (bool)
+```cs
+using HRExtension;
+using HRtoVRChat_OSC_SDK;
 
-Whether the data source connection is valid.
+namespace HRExtensionCLI;
 
-### abstract IsActive (bool)
+class Program
+{
+    private static HRExtensionMain? SDK;
 
-Whether the data source has a device connected.
+    static void Main(string[] args)
+    {
+        SDK = new();
+        SDK.Open();
+        Console.ReadKey(true);
+    }
+}
+```
 
-## base methods
+And from here, you can get fancy and decide how you want to handle when the user wishes to close the SDK. Maybe something like using [Console.ReadLine()](https://docs.microsoft.com/en-us/dotnet/api/system.console.readline?view=net-6.0) to handle commands?
 
-Entire documentation of `HRSDK`'s methods.
+## HRSDK Docs
 
-### virtual OnSDKOpened()
+### Abstract Properties
 
-A virtual method (one that can be overridden) that will be invoked when the SDK connects to the server.
++ HRSDKOptions Options {get}
+    + Required for SDK Information for the OSC App
++ int HR {get set}
+    + The current HeartRate that the SDK reads
++ bool IsOpen {get set}
+    + If the device that transmits HR data to the SDK is connected
+    + If this doesn't matter, then make it the same as IsActive
++ bool IsActive {get set}
+    + If the SDK has an active connection to it's source
+    + Most of the time, this will be true as long as it can get HR data
 
-### virtual OnSDKData(Messages.HRMessage message)
+### Properties
 
-A virtual method that'll callback whenever an HRMessage is received. Currently only called when RequestHRData is invoked.
++ bool IsSDKConnected {get}
+    + Whether the SDK is connected to the Server
+    + This will always be true if the SDK IsReflected
++ bool IsReflected {get}
+    + Whether or not the SDK was loaded with Reflection
 
-### virtual OnSDKClosed()
+### Override Methods
 
-A virtual method (one that can be overridden) that will be invoked when the SDK disconnects from the server.
++ void OnSDKOpened()
+    + Invoked when the SDK is opened
++ void OnSDKUpdate()
+    + Invoked when the SDK is updated
+    + Preferred to only be used when IsReflected is true
+      + If it isn't true, then only use it for PushData()
++ void OnSDKData(Messages.HRMessage message)
+    + Callback for when the SDK receives data from the server
++ void OnSDKClosed()
+    + Invoked when the SDK is closed
 
-### void Update()
+## Methods
 
-Invoke when you wish to update the HeartRate data. Will send whatever the `HR`, `IsOpen`, and `IsActive` abstract properties are.
-
-### void RequestHRData()
-
-Send a request for the latest HR data on the client. Will callback to the OnSDKData override.
-
-### void Open()
-
-Invoke when you wish to open the connection to the SDK. This is invoked automatically if the constructor's `autoOpen` parameter is left at `true`.
-
-### void Close()
-
-Invoke when you wish to close the connection to the SDK.
++ void PushData()
+    + Sends the current values of `HR`, `IsOpen`, and `IsActive` to the server.
++ void PullData()
+    + Requests the current server data
+    + Callback is at `OnSDKData`
++ void Open()
+    + Opens a TCP Connection to the server
+    + Network only! Will not do anything if IsReflected is true
++ void Close()
+    + Closes an active TCP Connection to the server
+    + Network only! Will not do anything if IsReflected is true
++ void Log(LogLevel logLevel, object msg, ConsoleColor color = ConsoleColor.White, Exception? e = null)
+    + LogHelper duplication for HRSDK
+    + Highly recommended to be used if IsReflected is true, as logs will output to the log folder when sent through here
