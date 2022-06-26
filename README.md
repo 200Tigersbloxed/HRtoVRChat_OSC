@@ -44,7 +44,7 @@ Please also consider contributing to add more support with other Heart Rate Moni
 | Omnicept        | `omnicept`      | https://www.hp.com/us-en/vr/reverb-g2-vr-headset-omnicept-edition.html                         |
 | SDK             | `sdk`           | https://github.com/200Tigersbloxed/HRtoVRChat_OSC/blob/main/SDK.md                             |
 
-**[For a full list of all the supported devices, please click here](https://www.fortnite.lol/projects/hrtovrchat#h.mlz9fz56ioey)**
+**[For a full list of all the supported devices, please click here](https://hrtovrchat.fortnite.lol/supported-devices)**
 
 Take note of HRType, as you'll need to know which you you have to put in the `hrtype` config value.
 
@@ -84,19 +84,23 @@ Arguments that can be run with the app
 |--------------------|------------------------------------------------------------|
 | `--auto-start`     | Starts and Stops depending on if VRChat is running or not. |
 | `--skip-vrc-check` | Ignores whether or not VRChat is open.                     |
+| `--neos-bridge`    | Initializes the bridge to send parameter data to Neos.     |
 
 ## Console Commands
 
 These commands can be input into the console window while running
 
-| Command     | Parameters | Description                                        |
-|-------------|------------|----------------------------------------------------|
-| `starthr`   | none       | Starts the HR Listener                             |
-| `stophr`    | none       | Stops the HR Listener                              |
-| `restarthr` | none       | Restarts the HR Listener                           |
-| `startbeat` | none       | Starts HeartBeat if it isn't enabled already.      |
-| `stopbeat`  | none       | Stops the HeartBeat if it is already started       |
-| `exit`      | none       | Exits the app properly. **NOT THE SAME AS CTRL+C** |
+| Command      | Parameters | Description                                        |
+|--------------|------------|----------------------------------------------------|
+| `starthr`    | none       | Starts the HR Listener                             |
+| `stophr`     | none       | Stops the HR Listener                              |
+| `restarthr`  | none       | Restarts the HR Listener                           |
+| `startbeat`  | none       | Starts HeartBeat if it isn't enabled already       |
+| `stopbeat`   | none       | Stops the HeartBeat if it is already started       |
+| `biassdk`    | SDK Name   | Sets a preferred SDK to pull data from             |
+| `unbiassdk`  | none       | Removes a bias towards any SDK                     |
+| `destroysdk` | SDK Name   | Removes an SDK by name                             |
+| `exit`       | none       | Exits the app properly. **NOT THE SAME AS CTRL+C** |
 
 ## Avatar Setup
 
