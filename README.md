@@ -12,8 +12,8 @@ Stream your Heart Rate onto your VRChat avatar via. the use of OSC Avatar Parame
 
 **It is always recommended to use the UI as it heavily simplifies the process of setting up the software!**
 
-1) Download the `HRtoVRChat_OSC_UI.zip` from the [Latest Release](https://github.com/200Tigersbloxed/HRtoVRChat_OSC/releases/latest)
-2) Extract the folder to a directory
+1) Download HRtoVRChat from the [Downloads Page](https://hrtovrchat.fortnite.lol/download#h.ha8hgsfz56g2)
+2) Extract the folder to a directory, and launch the application
 3) Go to the Updates tab, and hit the Update Software
     + After the process completes, hit the Refresh button and make sure the Installed Version and Latest Version match
 5) Return to the Program tab, and Start the app once, then wait for it to close
@@ -21,7 +21,7 @@ Stream your Heart Rate onto your VRChat avatar via. the use of OSC Avatar Parame
 
 ## Installing the Console App
 
-1) Download the `HRtoVRChat_OSC.zip` from the [Latest Release](https://github.com/200Tigersbloxed/HRtoVRChat_OSC/releases/latest)
+1) Download `HRtoVRChat_OSC` from the [Downloads Page](https://hrtovrchat.fortnite.lol/download#h.w34oohk7gucz)
 2) Extract the folder to a directory
 3) Run once, the app will auto close.
 4) Open `config.cfg` (in the same directory) and change the config values to your likings.
