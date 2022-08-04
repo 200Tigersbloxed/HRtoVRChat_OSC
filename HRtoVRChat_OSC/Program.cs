@@ -33,8 +33,8 @@ namespace HRtoVRChat_OSC
         static void Main(string[] args)
         {
             Gargs = args;
-            bool foundOnStart = OSCManager.Detect();
             ConfigManager.CreateConfig();
+            bool foundOnStart = OSCManager.Detect();
             OSCAvatarListener.Init();
             _appBridge.InitServer(() =>
             {

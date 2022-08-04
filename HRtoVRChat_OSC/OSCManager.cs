@@ -15,6 +15,8 @@ namespace HRtoVRChat_OSC
             int processes = Process.GetProcessesByName("VRChat").Length;
             if (Program.Gargs.Contains("--neos-bridge"))
                 processes += Process.GetProcessesByName("Neos").Length;
+            if (ConfigManager.LoadedConfig.ExpandCVR)
+                processes += Process.GetProcessesByName("ChilloutVR").Length;
             return processes > 0;
         }
 

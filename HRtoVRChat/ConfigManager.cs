@@ -283,6 +283,9 @@ namespace HRtoVRChat
             ["HRPercent"] = "HRPercent",
             ["HR"] = "HR"
         };
+        [TommyComment("Allow HRtoVRChat_OSC to be used with ChilloutVR. Requires an OSC mod for ChilloutVR")]
+        [TommyInclude]
+        public bool ExpandCVR = true;
     }
 
     [TommyTableName("HRtoVRChat")]

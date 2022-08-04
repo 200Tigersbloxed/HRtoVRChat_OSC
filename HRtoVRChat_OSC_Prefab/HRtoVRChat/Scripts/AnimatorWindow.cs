@@ -7,8 +7,13 @@ using System.Linq;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
+#if CVR_CCK_EXISTS
+using ABI.CCK.Components;
+#endif
+#if VRC_SDK_VRCSDK3
 using VRC.SDK3.Avatars.Components;
 using VRC.SDK3.Avatars.ScriptableObjects;
+#endif
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
@@ -298,38 +303,6 @@ namespace HRtoVRChat.Scripts
             animator.AddLayer(layer);
         }
 
-        /// <summary>
-        /// Adds parameters to an AvatarDescriptor
-        /// </summary>
-        /// <param name="avatarDescriptor">The target Avatar Descriptor</param>
-        /// <param name="parameter">The parameter to add</param>
-        private static bool AddVRCParameter(VRCAvatarDescriptor avatarDescriptor, VRCExpressionParameters.Parameter parameter)
-        {
-            // Make sure Parameters aren't null
-            if (avatarDescriptor.expressionParameters == null)
-                return false;
-            // Instantiate and Save to Database
-            VRCExpressionParameters newParameters = avatarDescriptor.expressionParameters;
-            string assetPath = AssetDatabase.GetAssetPath(avatarDescriptor.expressionParameters);
-            if (assetPath != String.Empty)
-            {
-                AssetDatabase.RemoveObjectFromAsset(avatarDescriptor.expressionParameters);
-                AssetDatabase.CreateAsset(newParameters, assetPath);
-                avatarDescriptor.expressionParameters = newParameters;
-            }
-            // Make sure the parameter doesn't already exist
-            VRCExpressionParameters.Parameter foundParameter = newParameters.FindParameter(parameter.name);
-            if (foundParameter == null || foundParameter.valueType != parameter.valueType)
-            {
-                // Add the parameter
-                List<VRCExpressionParameters.Parameter> betterParametersBecauseItsAListInstead =
-                    newParameters.parameters.ToList();
-                betterParametersBecauseItsAListInstead.Add(parameter);
-                newParameters.parameters = betterParametersBecauseItsAListInstead.ToArray();
-            }
-            return true;
-        }
-
         public static string HR_paramname = "HR";
         public static string onesHR_paramname = "onesHR";
         public static string tensHR_paramname = "tensHR";
@@ -340,9 +313,11 @@ namespace HRtoVRChat.Scripts
             bool overwriteLayers = false, bool writeDefaults = false, bool writeToParameters = false)
 
         {
+#if VRC_SDK_VRCSDK3
             VRCAvatarDescriptor descriptor = Avatar.GetComponent<VRCAvatarDescriptor>();
             if (descriptor == null)
                 throw new Exception("Failed to get Avatar Descriptor!");
+#endif
             Debug.Log("Creating Animations...");
             Dictionary<string, AnimationClip> generatedAnimations = new Dictionary<string, AnimationClip>();
             // Create the Animation Clips
@@ -415,9 +390,18 @@ namespace HRtoVRChat.Scripts
                         AssetDatabase.CreateAsset(clip, "Assets/" + pa + "/" + id + ".anim");
                         generatedAnimations.Add(id, clip);
                     }
+#if CVR_CCK_EXISTS
+                    CVRAvatar avatar = Avatar.GetComponent<CVRAvatar>();
+                    CVRCCKAnimations.ApplySmallerAnimationsToCVRAvatar(avatar, HR_paramname);
+#endif
                 }
                 else
                 {
+#if CVR_CCK_EXISTS
+                    EditorUtility.DisplayDialog("HRtoVRChat_SDK", "ChilloutVR is not supported for Larger HR sizes!",
+                        "OK");
+                    throw new Exception("ChilloutVR is not supported for Larger HR sizes!");
+#endif
                     for (int x = 0; x < 3; x++)
                     {
                         Transform currentNumberTransform = HRObjectFromLoop(HRObject, x);
@@ -534,10 +518,11 @@ namespace HRtoVRChat.Scripts
                     x++;
                 }
                 // Apply Parameters
+#if VRC_SDK_VRCSDK3
                 if (writeToParameters)
                 {
                     Debug.Log("Adding Parameters");
-                    AddVRCParameter(descriptor, new VRCExpressionParameters.Parameter
+                    VRCSDKAnimations.AddVRCParameter(descriptor, new VRCExpressionParameters.Parameter
                     {
                         name = HR_paramname,
                         defaultValue = 0,
@@ -545,6 +530,7 @@ namespace HRtoVRChat.Scripts
                         valueType = VRCExpressionParameters.ValueType.Int
                     });
                 }
+#endif
             }
             else
             {
@@ -642,24 +628,25 @@ namespace HRtoVRChat.Scripts
                     exit.AddCondition(AnimatorConditionMode.NotEqual, WordToNumber(split[1]), split[0] + "HR");
                 }
                 // Apply Parameters
+#if VRC_SDK_VRCSDK3
                 if (writeToParameters)
                 {
                     Debug.Log("Adding Parameters");
-                    AddVRCParameter(descriptor, new VRCExpressionParameters.Parameter
+                    VRCSDKAnimations.AddVRCParameter(descriptor, new VRCExpressionParameters.Parameter
                     {
                         name = onesHR_paramname,
                         defaultValue = 0,
                         saved = false,
                         valueType = VRCExpressionParameters.ValueType.Int
                     });
-                    AddVRCParameter(descriptor, new VRCExpressionParameters.Parameter
+                    VRCSDKAnimations.AddVRCParameter(descriptor, new VRCExpressionParameters.Parameter
                     {
                         name = tensHR_paramname,
                         defaultValue = 0,
                         saved = false,
                         valueType = VRCExpressionParameters.ValueType.Int
                     });
-                    AddVRCParameter(descriptor, new VRCExpressionParameters.Parameter
+                    VRCSDKAnimations.AddVRCParameter(descriptor, new VRCExpressionParameters.Parameter
                     {
                         name = hundredsHR_paramname,
                         defaultValue = 0,
@@ -667,6 +654,7 @@ namespace HRtoVRChat.Scripts
                         valueType = VRCExpressionParameters.ValueType.Int
                     });
                 }
+#endif
             }
 
             if (deleteComponentOnDone)
@@ -789,7 +777,12 @@ namespace HRtoVRChat.Scripts
             if (SelectedHRTarget != null)
             {
                 using (new EditorGUI.DisabledScope(SelectedHRTarget.Backend == HRObjectBackend.Shaders))
+#if VRC_SDK_VRCSDK3
                     useSmallerHR = GUILayout.Toggle(useSmallerHR, "Use one HR parameter");
+#else
+                    EditorGUILayout.HelpBox("useSmallerHR is enabled only for legacy VRChat builds.", MessageType.Info);
+                    useSmallerHR = true;
+#endif
                 if (SelectedHRTarget.Backend == HRObjectBackend.Shaders)
                 {
                     EditorGUILayout.HelpBox("useSmallerHR is required for a Shader Backend", MessageType.Info);
@@ -800,9 +793,11 @@ namespace HRtoVRChat.Scripts
                 GUILayout.Label("Please select an HR target to edit the setting: useSmallerHR");
             GUILayout.Label("Uses only one HR parameter instead of the conventional three parameters");
             NewGUILine();
+#if VRC_SDK_VRCSDK3
             writeToParameters = GUILayout.Toggle(writeToParameters, "Write to Expression Parameters");
             GUILayout.Label("Will write all expression parameters to the AvatarDescriptor's\nexpression parameters");
             NewGUILine();
+#endif
             deleteComponentOnDone = GUILayout.Toggle(deleteComponentOnDone, "Delete the TargetHRObject Component");
             GUILayout.Label("Deletes the TargetHRObject Component when finished");
             NewGUILine();
@@ -816,6 +811,7 @@ namespace HRtoVRChat.Scripts
             AnimatorCreator.HR_paramname = EditorGUILayout.TextField("HR Parameter Name", AnimatorCreator.HR_paramname);
             GUILayout.Label("Parameter name to be used for the parameter HR");
             NewGUILine();
+#if VRC_SDK_VRCSDK3
             AnimatorCreator.onesHR_paramname =
                 EditorGUILayout.TextField("onesHR Parameter Name", AnimatorCreator.onesHR_paramname);
             GUILayout.Label("Parameter name to be used for the parameter onesHR");
@@ -827,6 +823,7 @@ namespace HRtoVRChat.Scripts
             AnimatorCreator.hundredsHR_paramname =
                 EditorGUILayout.TextField("hundredsHR Parameter Name", AnimatorCreator.hundredsHR_paramname);
             GUILayout.Label("Parameter name to be used for the parameter hundredsHR");
+#endif
             GUILayout.EndScrollView();
             // END BODY
         }

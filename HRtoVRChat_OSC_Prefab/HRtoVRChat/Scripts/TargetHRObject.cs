@@ -37,7 +37,7 @@ namespace HRtoVRChat.Scripts
 
         public GameObject NumsIcon;
 
-        public VRCAvatarDescriptor AvatarRoot;
+        public GameObject AvatarRoot;
         public AnimatorController FXController;
 
         public HRMaterialCache HRMaterialCacheFromLoop(AnimatorCreator.NumberSpots loopControlVariable)
@@ -269,8 +269,8 @@ namespace HRtoVRChat.Scripts
             }
             // Required regardless
             GUILayout.Label("Required", EditorStyles.centeredGreyMiniLabel);
-            hrObject.AvatarRoot = (VRCAvatarDescriptor) EditorGUILayout.ObjectField(new GUIContent("AvatarRoot"),
-                hrObject.AvatarRoot, typeof(VRCAvatarDescriptor), true);
+            hrObject.AvatarRoot = (GameObject) EditorGUILayout.ObjectField(new GUIContent("AvatarRoot"),
+                hrObject.AvatarRoot, typeof(GameObject), true);
             if (!previewMode)
             {
                 if(hrObject.AvatarRoot == null)
