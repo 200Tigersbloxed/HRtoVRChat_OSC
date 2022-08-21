@@ -146,6 +146,9 @@ namespace HRtoVRChat_OSC
                                                            "startbeat - Starts HeartBeat if it isn't enabled already.\n" +
                                                            "stopbeat - Stops the HeartBeat if it is already started.\n" +
                                                            "refreshconfig - Refreshes the Config from File.\n" +
+                                                           "biassdk [sdkname] - Forces a specific SDK to be used (SDK hrType only)\n" +
+                                                           "unbiassdk - Does not prefer any SDK (SDK hrType only)\n" +
+                                                           "destroysdk [sdkname] - Unloads an SDK by name\n" +
                                                            "help - Shows available commands.\n";
 
         private static void HandleCommand(string? input, bool fromBridge = false)

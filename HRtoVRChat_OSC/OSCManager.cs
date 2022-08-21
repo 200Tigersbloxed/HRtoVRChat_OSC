@@ -7,8 +7,11 @@ namespace HRtoVRChat_OSC
 {
     public static class OSCManager
     {
-        private static UDPListener listener = new UDPListener(9001, packet => OnOscMessage.Invoke((OscMessage?) packet));
+        private static UDPListener listener;
         public static Action<OscMessage?> OnOscMessage = oscm => { };
+
+        static OSCManager() => listener = new UDPListener(ConfigManager.LoadedConfig.receiverPort,
+            packet => OnOscMessage.Invoke((OscMessage?) packet));
 
         public static bool Detect()
         {

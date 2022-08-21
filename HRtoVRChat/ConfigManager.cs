@@ -243,6 +243,9 @@ namespace HRtoVRChat
         [TommyComment("The Port to send messages to")]
         [TommyInclude]
         public int port = 9000;
+        [TommyComment("The Port to receive messages from")]
+        [TommyInclude]
+        public int receiverPort = 9001;
         [TommyComment("The source from where to pull Heart Rate Data")]
         [TommyInclude]
         public string hrType = "unknown";
