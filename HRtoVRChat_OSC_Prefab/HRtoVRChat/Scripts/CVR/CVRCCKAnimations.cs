@@ -1,4 +1,5 @@
-﻿#if CVR_CCK_EXISTS
+﻿#if UNITY_EDITOR
+#if CVR_CCK_EXISTS
 using System.Collections.Generic;
 using ABI.CCK.Components;
 using ABI.CCK.Scripts;
@@ -52,4 +53,5 @@ public static class CVRCCKAnimations
         avatar.avatarSettings.settings.Add(hrase);
     }
 }
+#endif
 #endif

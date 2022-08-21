@@ -1,4 +1,5 @@
-﻿#if VRC_SDK_VRCSDK3
+﻿#if UNITY_EDITOR
+#if VRC_SDK_VRCSDK3
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,4 +41,5 @@ public static class VRCSDKAnimations
         return true;
     }
 }
+#endif
 #endif
