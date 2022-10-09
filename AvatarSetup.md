@@ -38,7 +38,8 @@ The Expression Parameters supported with a description
 | isHRConnected  | `bool`         | false             | false           | Returns whether the device's connection is valid or not                               |
 | isHRActive     | `bool`         | false             | false           | Returns whether the connection is valid or not                                        |
 | isHRBeat       | `bool`         | false             | false           | Estimation on when the heart is beating                                               |
-| HRPercent      | `float`        | false             | false           | Range of HR between the MinHR and MaxHR config value                                  |
+| HRPercent      | `float`        | 0.0               | false           | Range of HR between the MinHR and MaxHR config value                                  |
+| FullHRPercent  | `float`        | 0.0               | false           | Range of HR between the MinHR and MaxHR config value on a scale of -1 to 1            |
 | HR             | `int`          | 0                 | false           | Returns the raw HR, ranged from 0 - 255. *(required)*                                 |
 
 ## Getting Started
