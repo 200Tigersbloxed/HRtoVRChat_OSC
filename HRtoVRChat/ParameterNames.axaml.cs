@@ -261,6 +261,11 @@ public partial class ParameterNames : Window
                 type = "float",
                 description = "Range of HR between the MinHR and MaxHR config value"
             },
+            ["FullHRPercent"] = new ParameterData
+            {
+                type = "float",
+                description = "Range of HR between the MinHR and the MaxHR config value, from -1 to 1"
+            },
             ["HR"] = new ParameterData
             {
                 type = "int",

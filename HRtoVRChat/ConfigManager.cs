@@ -284,11 +284,14 @@ namespace HRtoVRChat
             ["isHRActive"] = "isHRActive",
             ["isHRBeat"] = "isHRBeat",
             ["HRPercent"] = "HRPercent",
+            ["FullHRPercent"] = "FullHRPercent",
             ["HR"] = "HR"
         };
         [TommyComment("Allow HRtoVRChat_OSC to be used with ChilloutVR. Requires an OSC mod for ChilloutVR")]
         [TommyInclude]
         public bool ExpandCVR = true;
+
+        public static bool DoesConfigExist() => File.Exists(ConfigManager.ConfigLocation);
     }
 
     [TommyTableName("HRtoVRChat")]

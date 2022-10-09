@@ -81,6 +81,7 @@ namespace HRtoVRChat_OSC
             ["isHRActive"] = "isHRActive",
             ["isHRBeat"] = "isHRBeat",
             ["HRPercent"] = "HRPercent",
+            ["FullHRPercent"] = "FullHRPercent",
             ["HR"] = "HR"
         };
         [TommyComment("Allow HRtoVRChat_OSC to be used with ChilloutVR. Requires an OSC mod for ChilloutVR")]

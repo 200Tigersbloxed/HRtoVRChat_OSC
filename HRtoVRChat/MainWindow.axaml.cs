@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -138,6 +139,7 @@ public partial class MainWindow : Window
                                                       $"isHRActive: {message.isHRActive}\n" +
                                                       $"isHRBeat: {message.isHRBeat} (inaccurate over AppBridge)\n" +
                                                       $"HRPercent: {message.HRPercent}\n" +
+                                                      $"FullHRPercent: {message.FullHRPercent}\n" +
                                                       $"HR: {message.HR}\n\n" +
                                                       "-- Current Avatar --\n" +
                                                       $"name: {message.CurrentAvatar?.name ?? "unknown"}\n" +
@@ -185,6 +187,17 @@ public partial class MainWindow : Window
             };
             HomeCanvas.Children.Add(webview);
         }
+        // Check the SetupWozard
+        if (!Config.DoesConfigExist())
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                bool b = await SetupWizard.AskToSetup();
+                if (b)
+                {
+                    Hide();
+                    new SetupWizard(() => Show()).Show();
+                }
+            });
     }
     
     // Left Bar Panel

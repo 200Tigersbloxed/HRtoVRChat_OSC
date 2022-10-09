@@ -44,6 +44,20 @@
                     targetFloat = (HR - minhr) / (maxhr - minhr);
                 return targetFloat;
             }, ConfigManager.LoadedConfig.ParameterNames["HRPercent"], "HRPercent"));
+            Parameters.Add(new FloatParameter(hro =>
+            {
+                float targetFloat = 0f;
+                float maxhr = (float) ConfigManager.LoadedConfig.MaxHR;
+                float minhr = (float) ConfigManager.LoadedConfig.MinHR;
+                float HR = (float) hro.HR;
+                if (HR > maxhr)
+                    targetFloat = 1;
+                else if (HR < minhr)
+                    targetFloat = 0;
+                else
+                    targetFloat = (HR - minhr) / (maxhr - minhr);
+                return 2f * targetFloat - 1f;
+            }, ConfigManager.LoadedConfig.ParameterNames["FullHRPercent"], "FullHRPercent"));
             Parameters.Add(new BoolParameter(hro => hro.isActive,
                 ConfigManager.LoadedConfig.ParameterNames["isHRActive"], "isHRActive"));
             Parameters.Add(new BoolParameter(hro => hro.isConnected,

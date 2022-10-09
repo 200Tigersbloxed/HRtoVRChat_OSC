@@ -98,6 +98,9 @@ public class Messages
         [ProtoMember(9)]
         public float HRPercent { get; set; }
         
+        [ProtoMember(13)]
+        public float FullHRPercent { get; set; }
+        
         [ProtoMember(10)]
         public int HR { get; set; }
         

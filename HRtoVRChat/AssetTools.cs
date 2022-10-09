@@ -6,7 +6,7 @@ namespace HRtoVRChat;
 
 public static class AssetTools
 {
-    public static IBitmap Icon;
+    public static IBitmap Icon { get; set; }
 
     public static void Init()
     {

@@ -1,0 +1,46 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="535" d:DesignHeight="450"
+        Width="535" Height="450" WindowStartupLocation="CenterScreen"
+        MaxWidth="535" MaxHeight="450" MinWidth="535" MinHeight="450" CanResize="False"
+        x:Class="HRtoVRChat.SetupWizard"
+        Icon="/Assets/hrtovrchat_logo.ico"
+        Title="SetupWizard">
+        <Canvas>
+                <Label FontSize="24">Setup Wizard</Label>
+                <Canvas Name="hrtypepanel" Canvas.Top="75" Canvas.Left="5">
+                        <Label FontSize="16">HRType</Label>
+                        <Label Canvas.Top="40">Select the service you wish to use</Label>
+                        <StackPanel Canvas.Top="75" Name="sp11">
+                                <RadioButton GroupName="hrtypeselect" Name="fhr">FitbitHRtoWS</RadioButton>
+                                <RadioButton GroupName="hrtypeselect" Name="hr">HypeRate</RadioButton>
+                                <RadioButton GroupName="hrtypeselect" Name="ps">Pulsoid (Deprecated)</RadioButton>
+                                <RadioButton GroupName="hrtypeselect" Name="pss">PulsoidSocket</RadioButton>
+                        </StackPanel>
+                        <StackPanel Canvas.Top="75" Canvas.Left="375" Name="sp12">
+                                <RadioButton GroupName="hrtypeselect" Name="sn">Stromno</RadioButton>
+                                <RadioButton GroupName="hrtypeselect" Name="tf">TextFile</RadioButton>
+                                <RadioButton GroupName="hrtypeselect" Name="oc">Omnicept</RadioButton>
+                                <RadioButton GroupName="hrtypeselect" Name="sdk">SDK</RadioButton>
+                        </StackPanel>
+                        <Button Canvas.Top="340" Canvas.Left="450" Name="continue1">Continue</Button>
+                </Canvas>
+                <Canvas Name="endpointpanel" Canvas.Top="75" Canvas.Left="5" IsVisible="False">
+                        <Label>What device will the target Application be Running on?</Label>
+                        <RadioButton Canvas.Top="50" Canvas.Left="50" GroupName="td" Name="thisdevice">This Device</RadioButton>
+                        <RadioButton Canvas.Top="50" Canvas.Left="300" GroupName="td" Name="anotherdevice">Another Device</RadioButton>
+                        <Canvas Canvas.Top="100" Name="showextra2" IsVisible="False">
+                                <Label>What is the IP of this Device?</Label>
+                                <TextBox Canvas.Top="25" Width="525" Name="ip">127.0.0.1</TextBox>
+                                <Label Canvas.Top="60">What Port should we send OSC Messages to?</Label>
+                                <TextBox Canvas.Top="85" Width="525" Name="sendport">9000</TextBox>
+                                <Label Canvas.Top="120">What Port should we listen for OSC Messages?</Label>
+                                <TextBox Canvas.Top="145" Width="525" Name="listenport">9001</TextBox>
+                        </Canvas>
+                        <Button Canvas.Top="340" Canvas.Left="450" Name="continue2">Continue</Button>
+                        <Button Canvas.Top="340" Canvas.Left="370" Name="back2">Go Back</Button>
+                </Canvas>
+        </Canvas>
+</Window>
