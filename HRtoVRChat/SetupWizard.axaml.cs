@@ -75,7 +75,7 @@ public partial class SetupWizard : Window
                 new HRTypeExtraInfo("hyperateSessionId", "The code to pull HypeRate Data from", "ABCD", typeof(string))
             }
         },
-        ["ps"] = new HRTypeSelector("pusloid")
+        ["ps"] = new HRTypeSelector("pulsoid")
         {
             ExtraInfos = new()
             {
