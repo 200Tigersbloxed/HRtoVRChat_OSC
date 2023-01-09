@@ -326,6 +326,9 @@ namespace HRtoVRChat_OSC
                 case "fitbithrtows":
                     hrt = HRType.FitbitHRtoWS;
                     break;
+                case "hrproxy":
+                    hrt = HRType.HRProxy;
+                    break;
                 case "hyperate":
                     hrt = HRType.HypeRate;
                     break;
@@ -368,6 +371,10 @@ namespace HRtoVRChat_OSC
                 case HRType.FitbitHRtoWS:
                     activeHRManager = new FitbitManager();
                     activeHRManager.Init(ConfigManager.LoadedConfig.fitbitURL);
+                    break;
+                case HRType.HRProxy:
+                    activeHRManager = new HRProxyManager();
+                    activeHRManager.Init(ConfigManager.LoadedConfig.hrproxyId);
                     break;
                 case HRType.HypeRate:
                     activeHRManager = new HypeRateManager();
@@ -588,6 +595,7 @@ namespace HRtoVRChat_OSC
         private enum HRType
         {
             FitbitHRtoWS,
+            HRProxy,
             HypeRate,
             Pulsoid,
             Stromno,

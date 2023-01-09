@@ -1,19 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
-namespace HRtoVRChat
+namespace HRtoVRChatLauncher
 {
     public partial class App : Application
     {
         public override void Initialize()
         {
-            // Cache any assets
-            AssetTools.Init();
-            // Continue
             AvaloniaXamlLoader.Load(this);
         }
 
@@ -24,11 +18,7 @@ namespace HRtoVRChat
                 desktop.MainWindow = new MainWindow();
             }
 
-            TrayIconManager.Init(this);
-
             base.OnFrameworkInitializationCompleted();
         }
-
-        
     }
 }

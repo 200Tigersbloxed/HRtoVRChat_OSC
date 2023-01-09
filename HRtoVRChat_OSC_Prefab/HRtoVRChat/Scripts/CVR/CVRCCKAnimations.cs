@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using ABI.CCK.Components;
 using ABI.CCK.Scripts;
-using UnityEngine;
 
 public static class CVRCCKAnimations
 {

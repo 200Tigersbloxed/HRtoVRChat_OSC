@@ -1,0 +1,21 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="300"
+        MinWidth="500" MinHeight="300" MaxWidth="500" MaxHeight="300" CanResize="False"
+        SystemDecorations="None" WindowStartupLocation="CenterScreen"
+        x:Class="HRtoVRChatLauncher.MainWindow"
+        xmlns:gif="clr-namespace:AvaloniaGif;assembly=AvaloniaGif"
+        Title="HRtoVRChat HRtoVRChatLauncher">
+    <Canvas>
+        <gif:GifImage Width="500" Name="GifVector" IsVisible="False"></gif:GifImage>
+        <Image Source="Assets/sad.png" Width="500" Name="SadImageVector" IsVisible="False"></Image>
+        <Image Source="Assets/OfflineImage.png" Width="500" Name="ImageVector"></Image>
+        <Rectangle Fill="#141414" Width="500" Height="75" Canvas.Bottom="0"></Rectangle>
+        <Image Source="Assets/hrtovrchat_logo.ico" Width="50" Canvas.Right="5" Canvas.Bottom="15"></Image>
+        <TextBlock Canvas.Bottom="45" Canvas.Left="5" Foreground="White" FontSize="24">HRtoVRChat</TextBlock>
+        <TextBlock Canvas.Bottom="30" Canvas.Left="5" Foreground="White" FontSize="14" Name="ActionText"></TextBlock>
+        <ProgressBar Width="500" Value="0" Foreground="Red" Canvas.Bottom="0" Name="ProgressBar"></ProgressBar>
+    </Canvas>
+</Window>

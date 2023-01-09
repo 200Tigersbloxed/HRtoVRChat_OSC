@@ -316,7 +316,7 @@ namespace HRtoVRChat.Scripts
 #if VRC_SDK_VRCSDK3
             VRCAvatarDescriptor descriptor = Avatar.GetComponent<VRCAvatarDescriptor>();
             if (descriptor == null)
-                throw new Exception("Failed to get Avatar Descriptor!");
+                UnityEngine.Debug.LogError("Failed to get Avatar Descriptor! This may cause issues!");
 #endif
             Debug.Log("Creating Animations...");
             Dictionary<string, AnimationClip> generatedAnimations = new Dictionary<string, AnimationClip>();

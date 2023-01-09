@@ -68,6 +68,13 @@ public partial class SetupWizard : Window
                 new HRTypeExtraInfo("fitbitURL", "The WebSocket to listen to data", "ws://localhost:8080/", typeof(string))
             }
         },
+        ["hrp"] = new HRTypeSelector("hrproxy")
+        {
+            ExtraInfos = new()
+            {
+                new HRTypeExtraInfo("hrproxyId", "The code to pull HRProxy Data from", "ABCD", typeof(string))
+            }
+        },
         ["hr"] = new HRTypeSelector("hyperate")
         {
             ExtraInfos = new()

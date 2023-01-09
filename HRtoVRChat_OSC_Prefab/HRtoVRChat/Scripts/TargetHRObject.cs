@@ -1,17 +1,18 @@
 ﻿#if UNITY_EDITOR
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
+#if CVR_CCK_EXISTS
+using ABI.CCK.Components;
+#endif
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
+#if VRC_SDK_VRCSDK3
 using VRC.SDK3.Avatars.Components;
-using Debug = UnityEngine.Debug;
+#endif
 using Object = UnityEngine.Object;
 
 namespace HRtoVRChat.Scripts
@@ -277,6 +278,7 @@ namespace HRtoVRChat.Scripts
                     EditorGUILayout.HelpBox("AvatarRoot is null! This is required.", MessageType.Error);
                 else
                 {
+#if VRC_SDK_VRCSDK3
                     VRCAvatarDescriptor vrcAvatarDescriptor = hrObject.AvatarRoot.GetComponent<VRCAvatarDescriptor>();
                     if (vrcAvatarDescriptor != null)
                     {
@@ -305,6 +307,28 @@ namespace HRtoVRChat.Scripts
                     else
                         EditorGUILayout.HelpBox("No VRCAvatarDescriptor was found! This may cause issues during building.",
                             MessageType.Error);
+#endif
+#if CVR_CCK_EXISTS
+                    CVRAvatar cvrAvatar = hrObject.AvatarRoot.GetComponent<CVRAvatar>();
+                    if (cvrAvatar != null)
+                    {
+                        if (cvrAvatar.avatarSettings.baseController != hrObject.FXController)
+                        {
+                            EditorGUILayout.HelpBox(
+                                "The AnimatorController on your CVRAvatar is not the same as the one " +
+                                "provided below. Was this intended?",
+                                MessageType.Warning);
+                        }
+                    }
+                    else
+                        EditorGUILayout.HelpBox("No CVRAvatar was found! This may cause issues during building.",
+                            MessageType.Error);
+#endif
+#if CVR_CCK_EXISTS && VRC_SDK_VRCSDK3 
+#else
+                    EditorGUILayout.HelpBox("No valid SDK/CCK detected! This may cause issues during building.",
+                            MessageType.Error);
+#endif
                 }
             }
             hrObject.FXController = (AnimatorController) EditorGUILayout.ObjectField(new GUIContent("FXController"),

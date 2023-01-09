@@ -170,7 +170,7 @@ public abstract class HRSDK
         {
             if (e != null && logLevel != LogLevel.Error)
                 msg += " | Exception: " + e;
-            StackFrame frame = new StackFrame(1);
+            /*StackFrame frame = new StackFrame(1);
             switch (logLevel)
             {
                 case LogLevel.Debug:
@@ -200,7 +200,15 @@ public abstract class HRSDK
                     Console.WriteLine(log);
                     Console.ForegroundColor = ConsoleColor.White;
                     break;
-            }
+            }*/
+            Messages.HRLogMessage hrLogMessage = new Messages.HRLogMessage
+            {
+                LogLevel = logLevel,
+                Message = msg.ToString(),
+                Color = color
+            };
+            byte[] data = hrLogMessage.Serialize();
+            client?.Send(data);
         }
         else
             on_log(this, logLevel, msg, color, e);

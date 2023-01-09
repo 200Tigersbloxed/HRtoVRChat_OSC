@@ -53,6 +53,20 @@ public class Messages
         [ProtoMember(5)]
         public bool IsActive { get; set; }
     }
+
+    [ProtoContract]
+    public class HRLogMessage : MessageTools
+    {
+        [ProtoMember(1)]
+        public readonly string MessageType = "HRLogMessage";
+
+        [ProtoMember(2)] public HRSDK.LogLevel LogLevel { get; set; } = HRSDK.LogLevel.Debug;
+
+        [ProtoMember(3)]
+        public string Message { get; set; } = String.Empty;
+
+        [ProtoMember(4)] public ConsoleColor Color { get; set; } = ConsoleColor.White;
+    }
     
     [ProtoContract]
     public class GetHRData : MessageTools
@@ -138,6 +152,7 @@ public static class MessageCache
     public static readonly List<Type> MessageTypes = new List<Type>
     {
         typeof(Messages.HRMessage),
+        typeof(Messages.HRLogMessage),
         typeof(Messages.GetHRData)
     };
 }

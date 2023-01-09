@@ -49,6 +49,9 @@ namespace HRtoVRChat_OSC
         [TommyComment("(FitbitHRtoWS Only) The WebSocket to listen to data")]
         [TommyInclude]
         public string fitbitURL = "ws://localhost:8080/";
+        [TommyComment("(HRProxy Only) The code to pull HRProxy Data from")]
+        [TommyInclude]
+        public string hrproxyId = String.Empty;
         [TommyComment("(HypeRate Only) The code to pull HypeRate Data from")]
         [TommyInclude]
         public string hyperateSessionId = String.Empty;

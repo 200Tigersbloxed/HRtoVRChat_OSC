@@ -196,6 +196,24 @@ public class SDKManager : HRManager
                                 RemoteSDKs[remoteSdK.Key] = hrm;
                         }
                         break;
+                    case "HRLogMessage":
+                        Messages.HRLogMessage hrLogMessage = Messages.DeserializeMessage<Messages.HRLogMessage>(data);
+                        switch (hrLogMessage.LogLevel)
+                        {
+                            case HRSDK.LogLevel.Debug:
+                                LogHelper.Debug(hrLogMessage.Message);
+                                break;
+                            case HRSDK.LogLevel.Log:
+                                LogHelper.Log(hrLogMessage.Message, hrLogMessage.Color);
+                                break;
+                            case HRSDK.LogLevel.Warn:
+                                LogHelper.Log(hrLogMessage.Message);
+                                break;
+                            case HRSDK.LogLevel.Error:
+                                LogHelper.Error(hrLogMessage.Message);
+                                break;
+                        }
+                        break;
                     case "GetHRData":
                         Messages.HRMessage hrm_ghrd = new Messages.HRMessage
                         {

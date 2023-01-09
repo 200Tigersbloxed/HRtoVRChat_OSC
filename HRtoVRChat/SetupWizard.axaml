@@ -15,6 +15,7 @@
                         <Label Canvas.Top="40">Select the service you wish to use</Label>
                         <StackPanel Canvas.Top="75" Name="sp11">
                                 <RadioButton GroupName="hrtypeselect" Name="fhr">FitbitHRtoWS</RadioButton>
+                                <RadioButton GroupName="hrtypeselect" Name="hrp">HRProxy</RadioButton>
                                 <RadioButton GroupName="hrtypeselect" Name="hr">HypeRate</RadioButton>
                                 <RadioButton GroupName="hrtypeselect" Name="ps">Pulsoid (Deprecated)</RadioButton>
                                 <RadioButton GroupName="hrtypeselect" Name="pss">PulsoidSocket</RadioButton>

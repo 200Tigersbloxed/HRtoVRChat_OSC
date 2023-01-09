@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRtoVRChat_OSC_SDK", "HRtoV
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRtoVRChat", "HRtoVRChat\HRtoVRChat.csproj", "{CD784F02-34DB-445F-BCC6-AD5BE68D7991}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRtoVRChatLauncher", "HRtoVRChatLauncher\HRtoVRChatLauncher.csproj", "{CBEC15F4-95BA-46F2-AD11-65BF644A10BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,5 +30,9 @@ Global
 		{CD784F02-34DB-445F-BCC6-AD5BE68D7991}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD784F02-34DB-445F-BCC6-AD5BE68D7991}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD784F02-34DB-445F-BCC6-AD5BE68D7991}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBEC15F4-95BA-46F2-AD11-65BF644A10BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBEC15F4-95BA-46F2-AD11-65BF644A10BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBEC15F4-95BA-46F2-AD11-65BF644A10BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBEC15F4-95BA-46F2-AD11-65BF644A10BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
