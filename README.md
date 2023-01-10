@@ -8,9 +8,17 @@ Stream your Heart Rate onto your VRChat avatar via. the use of OSC Avatar Parame
 [![lastcommit](https://img.shields.io/github/last-commit/200Tigersbloxed/HRtoVRChat_OSC?style=for-the-badge)](https://github.com/200Tigersbloxed/HRtoVRChat_OSC/commits/main) 
 [![issues](https://img.shields.io/github/issues/200Tigersbloxed/HRtoVRChat_OSC?style=for-the-badge)](https://github.com/200Tigersbloxed/HRtoVRChat_OSC/issues)
 
+## Using the Launcher
+
+**The Launcher will manage your HRtoVRChat for you from a single executable!**
+
+1) Download HRtoVRChatLauncher from the [Downloads Page](https://hrtovrchat.fortnite.lol/download#h.ha8hgsfz56g2)
+2) Launch the Application
+    + If you're on Linux, you may need to make the file executable first
+
 ## Installing the UI Helper
 
-**It is always recommended to use the UI as it heavily simplifies the process of setting up the software!**
+**It is always recommended to use the UI as it heavily simplifies the process of setting up the software! Use the Launcher to simplify the install proccess.**
 
 1) Download HRtoVRChat from the [Downloads Page](https://hrtovrchat.fortnite.lol/download#h.ha8hgsfz56g2)
 2) Extract the folder to a directory, and launch the application
@@ -36,6 +44,7 @@ Please also consider contributing to add more support with other Heart Rate Moni
 | Device          | HRType          | Info                                                                                           |
 |-----------------|-----------------|------------------------------------------------------------------------------------------------|
 | FitbitHRtoWS    | `fitbithrtows`  | https://github.com/200Tigersbloxed/FitbitHRtoWS                                                |
+| HRProxy         | `hrproxy`       | HRProxy Custom Reader                                                                          |
 | HypeRate        | `hyperate`      | https://www.hyperate.io/                                                                       |
 | Pulsoid         | `pulsoid`       | https://pulsoid.net/ https://www.stromno.com/                                                  |
 | PulsoidSocket   | `pulsoidsocket` | https://github.com/200Tigersbloxed/HRtoVRChat_OSC/wiki/Upgrading-from-Pulsoid-to-PulsoidSocket |
@@ -68,6 +77,7 @@ Below is a table of all the config values and a description. Please update the c
 | `port`              | `(int)` 9000              | The Port to send OSC messages to.                                                       |
 | `hrtype`            | `(string)` unknown        | The type of service where to get Heart Rate data from.                                  |
 | `fitbiturl`         | `(string)` `String.Empty` | (FitbitHRtoWS Only) The WebSocket URL to connect to.                                    |
+| `hrproxyId`         | `(string)` `String.Empty` | (HRProxy Only) The HRProxy Custom Reader Id.                                            |
 | `hyperatesessionid` | `(string)` `String.Empty` | (HypeRate Only) The HypeRate SessionId to subscribe to.                                 |
 | `pulsoidwidget`     | `(string)` `String.Empty` | (Pulsoid Only) The Widget's URL to GET from an API.                                     |
 | `stromnowidget`     | `(string)` `String.Empty` | (Stromno Only) The Widget's URL to GET from an API.                                     |
@@ -90,17 +100,18 @@ Arguments that can be run with the app
 
 These commands can be input into the console window while running
 
-| Command      | Parameters | Description                                        |
-|--------------|------------|----------------------------------------------------|
-| `starthr`    | none       | Starts the HR Listener                             |
-| `stophr`     | none       | Stops the HR Listener                              |
-| `restarthr`  | none       | Restarts the HR Listener                           |
-| `startbeat`  | none       | Starts HeartBeat if it isn't enabled already       |
-| `stopbeat`   | none       | Stops the HeartBeat if it is already started       |
-| `biassdk`    | SDK Name   | Sets a preferred SDK to pull data from             |
-| `unbiassdk`  | none       | Removes a bias towards any SDK                     |
-| `destroysdk` | SDK Name   | Removes an SDK by name                             |
-| `exit`       | none       | Exits the app properly. **NOT THE SAME AS CTRL+C** |
+| Command         | Parameters | Description                                        |
+|-----------------|------------|----------------------------------------------------|
+| `starthr`       | none       | Starts the HR Listener                             |
+| `stophr`        | none       | Stops the HR Listener                              |
+| `restarthr`     | none       | Restarts the HR Listener                           |
+| `startbeat`     | none       | Starts HeartBeat if it isn't enabled already       |
+| `stopbeat`      | none       | Stops the HeartBeat if it is already started       |
+| `refreshconfig` | none       | Refreshes the config from file                     |
+| `biassdk`       | SDK Name   | Sets a preferred SDK to pull data from             |
+| `unbiassdk`     | none       | Removes a bias towards any SDK                     |
+| `destroysdk`    | SDK Name   | Removes an SDK by name                             |
+| `exit`          | none       | Exits the app properly. **NOT THE SAME AS CTRL+C** |
 
 ## Avatar Setup
 
