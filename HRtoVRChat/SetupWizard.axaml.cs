@@ -89,7 +89,7 @@ public partial class SetupWizard : Window
                 new HRTypeExtraInfo("pulsoidwidget", "The widgetId to pull HeartRate Data from", "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", typeof(string))
             }
         },
-        ["pss"] = new HRTypeSelector("pusloidsocket")
+        ["pss"] = new HRTypeSelector("pulsoidsocket")
         {
             ExtraInfos = new()
             {
