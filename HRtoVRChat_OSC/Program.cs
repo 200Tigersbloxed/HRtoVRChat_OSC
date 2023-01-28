@@ -382,9 +382,9 @@ namespace HRtoVRChat_OSC
                     break;
                 case HRType.Pulsoid:
                     LogHelper.Warn("\n=========================================================================================\n" +
-                                   "WARNING ABOUT PUSLOID\n" +
+                                   "WARNING ABOUT PULSOID\n" +
                                    "It is detected that you're using the Pulsoid Method for grabbing HR Data,\n" +
-                                   "Please note that this method will soon be DEPRECATED and replaced with PusloidSocket!\n" +
+                                   "Please note that this method will soon be DEPRECATED and replaced with PulsoidSocket!\n" +
                                    "Please see the URL below on how to upgrade!\n" +
                                    "https://github.com/200Tigersbloxed/HRtoVRChat_OSC/wiki/Upgrading-from-Pulsoid-to-PulsoidSocket \n" +
                                    "=========================================================================================\n\n" +

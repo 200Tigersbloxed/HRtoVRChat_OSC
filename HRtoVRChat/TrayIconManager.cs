@@ -9,6 +9,7 @@ namespace HRtoVRChat;
 public static class TrayIconManager
 {
     public static MainWindow? MainWindow;
+    public static Arguments? ArgumentsWindow;
     
     public static Dictionary<string, NativeMenuItemBase> nativeMenuItems = new Dictionary<string, NativeMenuItemBase>
     {
@@ -171,16 +172,16 @@ public static class TrayIconManager
                 switch (id)
                 {
                     case "AutoStart":
-                        MainWindow.AutoStartCheckBox.IsChecked = nmi.IsChecked;
-                        MainWindow.AutoStartButtonPressed(null, null);
+                        ArgumentsWindow.autostart.IsChecked = nmi.IsChecked;
+                        ArgumentsWindow.AutoStartButtonPressed(null, null);
                         break;
                     case "SkipVRCCheck":
-                        MainWindow.SkipVRCCheckBox.IsChecked = nmi.IsChecked;
-                        MainWindow.SkipVRCCheckButtonPressed(null, null);
+                        ArgumentsWindow.skipvrc.IsChecked = nmi.IsChecked;
+                        ArgumentsWindow.SkipVRCCheckButtonPressed(null, null);
                         break;
                     case "NeosBridge":
-                        MainWindow.NeosBridgeCheckBox.IsChecked = nmi.IsChecked;
-                        MainWindow.NeosBridgeButtonPressed(null, null);
+                        ArgumentsWindow.neosbridge.IsChecked = nmi.IsChecked;
+                        ArgumentsWindow.NeosBridgeButtonPressed(null, null);
                         break;
                     case "Start":
                         MainWindow.StartButtonPressed(null, null);

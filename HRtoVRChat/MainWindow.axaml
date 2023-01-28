@@ -93,12 +93,7 @@
                         <Button Canvas.Left="238" Canvas.Bottom="10" Click="StartButtonPressed">START</Button>
                         <Button Canvas.Left="310" Canvas.Bottom="10" Click="StopButtonPressed">STOP</Button>
                         <Button Canvas.Left="375" Canvas.Bottom="10" Click="KillButtonPressed">KILL</Button>
-                        <CheckBox Canvas.Bottom="50" Canvas.Left="25"
-                                  Name="AutoStartCheckBox" Click="AutoStartButtonPressed">Auto Start</CheckBox>
-                        <CheckBox Canvas.Bottom="50" Canvas.Left="150"
-                                  Name="SkipVRCCheckBox" Click="SkipVRCCheckButtonPressed">Skip VRChat Check</CheckBox>
-                        <CheckBox Canvas.Bottom="50" Canvas.Left="325"
-                                  Name="NeosBridgeCheckBox" Click="NeosBridgeButtonPressed">Neos Bridge</CheckBox>
+                        <Button Canvas.Left="25" Canvas.Bottom="50" Click="OpenArgumentsButtonPressed">Open Program Arguments</Button>
                         <TextBox Canvas.Bottom="130" Canvas.Left="25" Width="330" Name="CommandBox"
                                  Watermark="Enter a Command"></TextBox>
                         <Button Canvas.Bottom="130" Canvas.Left="370" Click="SendButtonPressed">SEND</Button>

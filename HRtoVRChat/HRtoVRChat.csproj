@@ -52,4 +52,10 @@
     <ItemGroup>
       <ProjectReference Include="..\HRtoVRChat_OSC_SDK\HRtoVRChat_OSC_SDK.csproj" />
     </ItemGroup>
+    <ItemGroup>
+      <Compile Update="Arguments.axaml.cs">
+        <DependentUpon>Arguments.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
 </Project>

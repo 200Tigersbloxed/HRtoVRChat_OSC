@@ -45,8 +45,6 @@ public partial class MainWindow : Window
             Directory.CreateDirectory(SoftwareManager.LocalDirectory);
         // Init the Window
         InitializeComponent();
-        // Set Instances
-        TrayIconManager.MainWindow = this;
         // Cache Window Panels
         WindowPanels.Add(ProgramPanels.Home, HomeCanvas);
         WindowPanels.Add(ProgramPanels.Program, ProgramCanvas);
@@ -56,10 +54,9 @@ public partial class MainWindow : Window
         // Load the Config Views
         ConfigManager.CreateConfig();
         ConfigManager.InitStackPanels(this);
-        AutoStartCheckBox.IsChecked = ConfigManager.LoadedUIConfig.AutoStart;
-        SkipVRCCheckBox.IsChecked = ConfigManager.LoadedUIConfig.SkipVRCCheck;
-        NeosBridgeCheckBox.IsChecked = ConfigManager.LoadedUIConfig.NeosBridge;
-        VerifyCheckBoxes();
+        // Set Instances
+        TrayIconManager.MainWindow = this;
+        TrayIconManager.ArgumentsWindow = new Arguments();
         // Subscribe to events
         SoftwareManager.OnConsoleUpdate += (message, overrideColor) =>
         {
@@ -284,28 +281,9 @@ public partial class MainWindow : Window
         catch(Exception){}
     }
 
-    public void AutoStartButtonPressed(object? sender, RoutedEventArgs routedEventArgs)
+    public void OpenArgumentsButtonPressed(object? sender, RoutedEventArgs routedEventArgs)
     {
-        ConfigManager.LoadedUIConfig.AutoStart = AutoStartCheckBox.IsChecked ?? false;
-        VerifyCheckBoxes(ref AutoStartCheckBox, out ConfigManager.LoadedUIConfig.AutoStart);
-    }
-
-    public void SkipVRCCheckButtonPressed(object? sender, RoutedEventArgs routedEventArgs)
-    {
-        ConfigManager.LoadedUIConfig.SkipVRCCheck = SkipVRCCheckBox.IsChecked ?? false;
-        VerifyCheckBoxes(ref SkipVRCCheckBox, out ConfigManager.LoadedUIConfig.SkipVRCCheck);
-    }
-
-    public void NeosBridgeButtonPressed(object? sender, RoutedEventArgs routedEventArgs)
-    {
-        ConfigManager.LoadedUIConfig.NeosBridge = NeosBridgeCheckBox.IsChecked ?? false;
-        TrayIconManager.Update(new TrayIconManager.UpdateTrayIconInformation
-        {
-            AutoStart = AutoStartCheckBox.IsChecked,
-            SkipVRCCheck = SkipVRCCheckBox.IsChecked,
-            NeosBridge = NeosBridgeCheckBox.IsChecked
-        });
-        ConfigManager.SaveConfig(ConfigManager.LoadedUIConfig);
+        TrayIconManager.ArgumentsWindow.Show();
     }
     
     public void SendButtonPressed(object? sender, RoutedEventArgs routedEventArgs)
@@ -383,42 +361,5 @@ public partial class MainWindow : Window
     {
         _textEditor.AppendText(text);
         richTextModel.ApplyHighlighting(_textEditor.Text.Length - text.Length, text.Length, new HighlightingColor() { Foreground = new SimpleHighlightingBrush(color)});
-    }
-
-    private void VerifyCheckBoxes(ref CheckBox checkBox, out bool config)
-    {
-        if((SkipVRCCheckBox.IsChecked ?? false) && (AutoStartCheckBox.IsChecked ?? false))
-        {
-            SkipVRCCheckBox.IsChecked = false;
-            ConfigManager.LoadedUIConfig.SkipVRCCheck = false;
-            AutoStartCheckBox.IsChecked = false;
-            ConfigManager.LoadedUIConfig.AutoStart = false;
-            checkBox.IsChecked = true;
-            config = true;
-        }
-        config = checkBox.IsChecked ?? false;
-        TrayIconManager.Update(new TrayIconManager.UpdateTrayIconInformation
-        {
-            AutoStart = AutoStartCheckBox.IsChecked,
-            SkipVRCCheck = SkipVRCCheckBox.IsChecked
-        });
-        ConfigManager.SaveConfig(ConfigManager.LoadedUIConfig);
-    }
-    
-    private void VerifyCheckBoxes()
-    {
-        if((SkipVRCCheckBox.IsChecked ?? false) && (AutoStartCheckBox.IsChecked ?? false))
-        {
-            SkipVRCCheckBox.IsChecked = false;
-            ConfigManager.LoadedUIConfig.SkipVRCCheck = false;
-            AutoStartCheckBox.IsChecked = false;
-            ConfigManager.LoadedUIConfig.AutoStart = false;
-            TrayIconManager.Update(new TrayIconManager.UpdateTrayIconInformation
-            {
-                AutoStart = false,
-                SkipVRCCheck = false
-            });
-        }
-        ConfigManager.SaveConfig(ConfigManager.LoadedUIConfig);
     }
 }

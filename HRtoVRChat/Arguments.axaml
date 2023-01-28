@@ -1,0 +1,31 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="610" d:DesignHeight="500"
+        Width="610" Height="500" MaxWidth="610" MaxHeight="500" MinWidth="610" MinHeight="500" CanResize="False"
+        WindowStartupLocation="CenterScreen"
+        Icon="/Assets/hrtovrchat_logo.ico"
+        x:Class="HRtoVRChat.Arguments"
+        Title="Launch Arguments">
+        <Canvas>
+            <Label Canvas.Top="5" FontSize="24" Canvas.Left="5">Auto Start</Label>
+            <Label Canvas.Top="40" Canvas.Left="5">Will Start and Stop HRtoVRChat_OSC as a compatible game opens and closes</Label>
+            <CheckBox Canvas.Top="60" Canvas.Left="25"
+                      Name="AutoStartCheckBox" Click="AutoStartButtonPressed">Auto Start</CheckBox>
+            <Label Canvas.Top="95" FontSize="24" Canvas.Left="5">Skip VRChat Check</Label>
+            <Label Canvas.Top="130" Canvas.Left="5">Will not check to see if a compatible game is open before starting</Label>
+            <CheckBox Canvas.Top="150" Canvas.Left="25"
+                      Name="SkipVRCCheckBox" Click="SkipVRCCheckButtonPressed">Skip VRChat Check</CheckBox>
+            <Label Canvas.Top="185" FontSize="24" Canvas.Left="5">Neos Bridge</Label>
+            <Label Canvas.Top="220" Canvas.Left="5">Sends specially serialized data over a WebSocket for Neos</Label>
+            <CheckBox Canvas.Top="240" Canvas.Left="25"
+                      Name="NeosBridgeCheckBox" Click="NeosBridgeButtonPressed">Neos Bridge</CheckBox>
+            <Label Canvas.Top="275" FontSize="24" Canvas.Left="5">Use Legacy Bools</Label>
+            <Label Canvas.Top="310" Canvas.Left="5">Casts Bools to Floats before sending over OSC</Label>
+            <CheckBox Canvas.Top="330" Canvas.Left="25"
+                      Name="LegacyBoolCheckBox" Click="LegacyBoolButtonPressed">Use Legacy Bools</CheckBox>
+            <Label Canvas.Left="5" Canvas.Bottom="40">Other Launch Arguments:</Label>
+            <TextBox Canvas.Bottom="5" Canvas.Left="5" Width="600" Name="OtherLaunchArgs"></TextBox>
+        </Canvas>
+</Window>

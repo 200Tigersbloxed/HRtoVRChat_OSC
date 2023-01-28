@@ -308,5 +308,11 @@ namespace HRtoVRChat
 
         [TommyComment("Broadcast data over a WebSocket designed for Neos")] [TommyInclude]
         public bool NeosBridge;
+
+        [TommyComment("Cast Parameter Bools to Floats")] [TommyInclude]
+        public bool UseLegacyBool;
+
+        [TommyInclude]
+        public string OtherArgs = "";
     }
 }

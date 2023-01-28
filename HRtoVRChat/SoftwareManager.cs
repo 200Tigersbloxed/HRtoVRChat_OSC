@@ -90,6 +90,13 @@ public static class SoftwareManager
                 Args.Add("--skip-vrc-check");
             if(ConfigManager.LoadedUIConfig.NeosBridge)
                 Args.Add("--neos-bridge");
+            if(ConfigManager.LoadedUIConfig.UseLegacyBool)
+                Args.Add("--use-01-bool");
+            try
+            {
+                foreach (string s in ConfigManager.LoadedUIConfig.OtherArgs.Split(' '))
+                    Args.Add(s);
+            }catch(Exception){}
         }
         string newargs = String.Empty;
         foreach (string arg in Args)

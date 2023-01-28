@@ -27,7 +27,7 @@ namespace HRtoVRChat_OSC
         {
             object realdata = data;
             // If it's a bool, it needs to be converted to a 0, 1 format
-            if (Type.GetTypeCode(realdata.GetType()) == TypeCode.Boolean)
+            if (Type.GetTypeCode(realdata.GetType()) == TypeCode.Boolean && Program.Gargs.Contains("--use-01-bool"))
             {
                 bool dat = (bool) Convert.ChangeType(realdata, TypeCode.Boolean);
                 if (dat)
@@ -57,17 +57,24 @@ namespace HRtoVRChat_OSC
                     {
                         case "/avatar/change":
                             // Find the AvatarFile
-                            string location = FindAvatarLocation((string) message.Arguments[0]);
-                            if (location != String.Empty && File.Exists(location))
+                            try
                             {
-                                // Read the file
-                                string text = File.ReadAllText(location);
-                                AvatarChangeMessage? acm = JsonSerializer.Deserialize<AvatarChangeMessage>(text);
-                                if(acm != null)
+                                string location = FindAvatarLocation((string) message.Arguments[0]);
+                                if (location != String.Empty && File.Exists(location))
                                 {
-                                    CurrentAvatar = acm;
-                                    OnAvatarChanged.Invoke(acm);
+                                    // Read the file
+                                    string text = File.ReadAllText(location);
+                                    AvatarChangeMessage? acm = JsonSerializer.Deserialize<AvatarChangeMessage>(text);
+                                    if (acm != null)
+                                    {
+                                        CurrentAvatar = acm;
+                                        OnAvatarChanged.Invoke(acm);
+                                    }
                                 }
+                            }
+                            catch (Exception e)
+                            {
+                                LogHelper.Error("Failed to get avatar file!", e);
                             }
                             break;
                     }
@@ -86,11 +93,24 @@ namespace HRtoVRChat_OSC
             {
                 foreach (string directory in Directory.GetDirectories(vrchat_osc_data_location))
                 {
-                    foreach (string file in Directory.GetFiles(Path.Combine(directory, "Avatars")))
+                    if (Directory.Exists(Path.Combine(directory, "Avatars")))
                     {
-                        string fn = Path.GetFileNameWithoutExtension(file);
-                        if (fn == id)
-                            fileLocation = file;
+                        foreach (string file in Directory.GetFiles(Path.Combine(directory, "Avatars")))
+                        {
+                            string fn = Path.GetFileNameWithoutExtension(file);
+                            if (fn == id)
+                                fileLocation = file;
+                        }
+                    }
+                    else if(Program.Gargs.Contains("--no-avatars-folder"))
+                    {
+                        // check this directory to see if the files are there (for whatever reason)
+                        foreach (string file in Directory.GetFiles(directory))
+                        {
+                            string fn = Path.GetFileNameWithoutExtension(file);
+                            if (fn == id)
+                                fileLocation = file;
+                        }
                     }
                 }
             }
