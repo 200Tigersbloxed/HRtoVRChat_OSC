@@ -90,11 +90,13 @@ Below is a table of all the config values and a description. Please update the c
 
 Arguments that can be run with the app
 
-| Argument           | Description                                                |
-|--------------------|------------------------------------------------------------|
-| `--auto-start`     | Starts and Stops depending on if VRChat is running or not. |
-| `--skip-vrc-check` | Ignores whether or not VRChat is open.                     |
-| `--neos-bridge`    | Initializes the bridge to send parameter data to Neos.     |
+| Argument              | Description                                                                    |
+|-----------------------|--------------------------------------------------------------------------------|
+| `--auto-start`        | Starts and Stops depending on if VRChat is running or not.                     |
+| `--skip-vrc-check`    | Ignores whether or not VRChat is open.                                         |
+| `--neos-bridge`       | Initializes the bridge to send parameter data to Neos.                         |
+| `--use-01-bool`       | Serializes bools as floats instead of as bools.                                |
+| `--no-avatars-folder` | Will scan a userid directory for avatars files if no Avatars directory exists. |
 
 ## Console Commands
 
