@@ -2,7 +2,6 @@
 
 Stream your Heart Rate onto your VRChat avatar via. the use of OSC Avatar Parameters.
 
-[![Discord](https://img.shields.io/discord/887157106472550422.svg?color=%237289da&label=discord&style=for-the-badge)](https://discord.gg/WF3B2r4xby) 
 [![license](https://img.shields.io/github/license/200Tigersbloxed/HRtoVRChat_OSC?style=for-the-badge)](https://github.com/200Tigersbloxed/HRtoVRChat_OSC/blob/main/LICENSE) 
 ![downloads](https://img.shields.io/github/downloads/200Tigersbloxed/HRtoVRChat_OSC/total?style=for-the-badge) 
 [![lastcommit](https://img.shields.io/github/last-commit/200Tigersbloxed/HRtoVRChat_OSC?style=for-the-badge)](https://github.com/200Tigersbloxed/HRtoVRChat_OSC/commits/main) 
